@@ -1,0 +1,11 @@
+{
+  "extends": "molindo/react",
+  "env": {
+    "es6": true,
+    "jest": true,
+    "node": true
+  },
+  "settings": {
+    "import/resolver": "node"
+  }
+}
