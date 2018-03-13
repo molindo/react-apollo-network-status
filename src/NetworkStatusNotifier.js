@@ -14,9 +14,13 @@ export default class NetworkStatusNotifier extends Component {
   };
 
   componentDidMount() {
-    this.props.store.listen(networkStatus => {
+    this.unlisten = this.props.store.listen(networkStatus => {
       this.setState({networkStatus});
     });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
   }
 
   render() {
