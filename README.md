@@ -76,6 +76,9 @@ createNetworkStatusNotifier({
     }),
     onError: (state, {operation, networkError}) => ({
       numPendingRequests: state.numPendingRequests - 1
+    }),
+    onCancel: (state, {operation, networkError}) => ({
+      numPendingRequests: state.numPendingRequests - 1
     })
   },
 
