@@ -22,32 +22,32 @@ const client = new ApolloClient({
   link: networkStatusNotifierLink.concat(createHttpLink())
 });
 
-// Render the notifier along with the app. The
-// `NetworkStatusNotifier` can be placed anywhere.
+// Render the notifier along with the app. The `NetworkStatusNotifier`
+// can be placed anywhere (also outside of ApolloProvider).
 const element = (
-  <Fragment>
-    <NetworkStatusNotifier render={({loading, error}) => (
-      <div>
-        {loading && <p>Loading …</p>}
-        {error && <p>Error: {JSON.stringify(error)}</p>}
-      </div>
-    )} />
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
-  </Fragment>
+  <ApolloProvider client={client}>
+    <NetworkStatusNotifier
+      render={({loading, error}) => (
+        <div>
+          {loading && <p>Loading …</p>}
+          {error && <p>Error: {JSON.stringify(error)}</p>}
+        </div>
+      )}
+    />
+    <App />
+  </ApolloProvider>
 );
 const node = document.getElementById('root');
 ReactDOM.render(element, node);
 ```
 
 The `NetworkStatusNotifier` provides a [render prop](https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce#cf12) which exposes the following properties:
- - `loading`: boolean
+ - `loading`: `boolean`
  - `error`:
-   - [`operation: Operation`](https://github.com/apollographql/apollo-link/blob/8ceba7322b533a26ea1e886aba5faa6af1937232/packages/apollo-link/src/types.ts#L12)
-   - [`response?: ExecutionResult`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/execution/execute.js#L108)
-   - [`graphQLErrors?: GraphQLError[]`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/error/GraphQLError.js#L22)
-   - [`networkError?: Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
+   - `operation`: [`Operation`](https://github.com/apollographql/apollo-link/blob/8ceba7322b533a26ea1e886aba5faa6af1937232/packages/apollo-link/src/types.ts#L12)
+   - `response?`: [`ExecutionResult`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/execution/execute.js#L108)
+   - `graphQLErrors?`: [`GraphQLError[]`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/error/GraphQLError.js#L22)
+   - `networkError?`: [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 
 The `error` object has the same structure, as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error).
 
