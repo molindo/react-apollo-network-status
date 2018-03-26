@@ -45,6 +45,16 @@ export default {
           operation
         }
       };
+    },
+
+    onCancel: (state, {operation}) => {
+      if (operation.getContext().useNetworkStatusNotifier === false) {
+        return state;
+      }
+
+      return {
+        numPendingRequests: state.numPendingRequests - 1
+      };
     }
   },
 

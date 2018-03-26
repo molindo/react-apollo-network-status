@@ -16,7 +16,7 @@ it('exposes `numPendingRequests` as a `loading` property', () => {
 describe('reducers', () => {
   const {
     initialState,
-    reducers: {onRequest, onSuccess, onError}
+    reducers: {onRequest, onSuccess, onError, onCancel}
   } = defaultConfig;
   const operation = {getContext: () => ({})};
   const request = state => onRequest(state, {operation});
@@ -39,6 +39,7 @@ describe('reducers', () => {
         data: {foo: true}
       }
     });
+  const cancel = state => onCancel(state, {operation});
 
   it('detects network errors', () => {
     const state = flow(request, networkError)(initialState);
@@ -78,11 +79,11 @@ describe('reducers', () => {
     state = success(state);
     expect(state.numPendingRequests).toBe(0);
 
-    state = flow(request, request)(state);
-    expect(state.numPendingRequests).toBe(2);
+    state = flow(request, request, cancel)(state);
+    expect(state.numPendingRequests).toBe(1);
 
     state = graphqlError(state);
-    expect(state.numPendingRequests).toBe(1);
+    expect(state.numPendingRequests).toBe(0);
   });
 
   it('recovers from errors', () => {

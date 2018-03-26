@@ -24,6 +24,12 @@ export default class NetworkStatusStore {
     this.updateState(this.reducers.onError(this.state, action));
   };
 
+  onCancel = action => {
+    if (this.reducers.onCancel) {
+      this.updateState(this.reducers.onCancel(this.state, action));
+    }
+  };
+
   updateState(next) {
     if (next === this.state) return;
 
