@@ -26,14 +26,12 @@ const client = new ApolloClient({
 // can be placed anywhere (also outside of ApolloProvider).
 const element = (
   <ApolloProvider client={client}>
-    <NetworkStatusNotifier
-      render={({loading, error}) => (
-        <div>
-          {loading && <p>Loading …</p>}
-          {error && <p>Error: {JSON.stringify(error)}</p>}
-        </div>
-      )}
-    />
+    <NetworkStatusNotifier render={({loading, error}) => (
+      <div>
+        {loading && <p>Loading …</p>}
+        {error && <p>Error: {JSON.stringify(error)}</p>}
+      </div>
+    )} />
     <App />
   </ApolloProvider>
 );
