@@ -1,9 +1,19 @@
+const isSubscriptionOperation = operation =>
+  operation.query.definitions.some(
+    definition =>
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+  );
+
 export default {
   initialState: {numPendingRequests: 0, error: null},
 
   reducers: {
     onRequest: (state, {operation}) => {
-      if (operation.getContext().useNetworkStatusNotifier === false) {
+      if (
+        isSubscriptionOperation(operation) ||
+        operation.getContext().useNetworkStatusNotifier === false
+      ) {
         return state;
       }
 
@@ -19,7 +29,9 @@ export default {
       }
 
       return {
-        numPendingRequests: state.numPendingRequests - 1,
+        numPendingRequests: isSubscriptionOperation(operation)
+          ? state.numPendingRequests
+          : state.numPendingRequests - 1,
         error: result.errors
           ? {
               graphQLErrors: result.errors,
@@ -36,7 +48,9 @@ export default {
       }
 
       return {
-        numPendingRequests: state.numPendingRequests - 1,
+        numPendingRequests: isSubscriptionOperation(operation)
+          ? state.numPendingRequests
+          : state.numPendingRequests - 1,
         error: {
           graphQLErrors: networkError.result
             ? networkError.result.errors
@@ -48,7 +62,10 @@ export default {
     },
 
     onCancel: (state, {operation}) => {
-      if (operation.getContext().useNetworkStatusNotifier === false) {
+      if (
+        isSubscriptionOperation(operation) ||
+        operation.getContext().useNetworkStatusNotifier === false
+      ) {
         return state;
       }
 
