@@ -47,6 +47,8 @@ The `NetworkStatusNotifier` provides a [render prop](https://cdb.reacttraining.c
    - `graphQLErrors?`: [`GraphQLError[]`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/error/GraphQLError.js#L22)
    - `networkError?`: [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
 
+The `loading` property will be `true` when there is at least one pending query or mutation. Note that subscriptions don't affect this property, however they can potentially set the `error` property.
+
 The `error` object has the same structure, as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error).
 
 By default the `error` will be set to `null` when a new operation is started.
