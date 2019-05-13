@@ -1,11 +1,30 @@
 {
-  "extends": "molindo/react",
+  "extends": ["molindo/react"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": ["react-hooks", "@typescript-eslint"],
   "env": {
     "es6": true,
-    "jest": true,
-    "node": true
+    "jest": true
   },
   "settings": {
-    "import/resolver": "node"
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-unused-vars": "off",
+    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "valid-jsdoc": "off"
+  },
+  "globals": {
+    "ReadonlyArray": false
   }
 }

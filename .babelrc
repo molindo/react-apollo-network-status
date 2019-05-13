@@ -1,17 +1,19 @@
 {
-  "presets": [["env", {"modules": false}], "stage-3"],
+  "presets": [
+    ["@babel/preset-env", {"modules": false}],
+    "@babel/preset-react",
+    "@babel/preset-typescript"
+  ],
   "plugins": [
-    "transform-class-properties",
-    "transform-export-extensions",
-    "transform-react-jsx"
+    "@babel/plugin-proposal-class-properties"
   ],
   "env": {
     "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+      "plugins": ["@babel/plugin-transform-modules-commonjs"]
     },
     "production": {
       "plugins"  : [
-        "external-helpers"
+        "@babel/plugin-external-helpers"
       ]
     }
   }
