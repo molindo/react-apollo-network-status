@@ -33,10 +33,12 @@ function cloneInstance<T>(original: T): T {
 
 export default function augmentApolloClient({
   client,
-  dispatcher
+  dispatcher,
+  enableBubbling
 }: {
   client: ApolloClient<any>;
   dispatcher: Dispatcher;
+  enableBubbling?: boolean;
 }): ApolloClient<any> {
   // Apollo Client <= 2.5.1 initializes the query manager lazily, however this
   // behaviour is removed in later versions. Ensure that it has been constructed.
@@ -44,7 +46,9 @@ export default function augmentApolloClient({
     client.initQueryManager();
   }
 
-  const link = new ApolloLinkNetworkStatus({dispatcher}).concat(client.link);
+  const link = new ApolloLinkNetworkStatus({dispatcher, enableBubbling}).concat(
+    client.link
+  );
 
   // Clone the client
   const augmentedClient = cloneInstance(client);

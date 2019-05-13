@@ -8,14 +8,19 @@ import augmentApolloClient from './augmentApolloClient';
 type Props = {
   client: ApolloClient<any>;
   children: ReactNode;
+  enableBubbling?: boolean;
 };
 
-function ApolloNetworkStatusProvider({client, children}: Props) {
+function ApolloNetworkStatusProvider({
+  client,
+  children,
+  enableBubbling
+}: Props) {
   const dispatcher = useMemo(() => new Dispatcher(), []);
 
   const augmentedClient = useMemo(
-    () => augmentApolloClient({client, dispatcher}),
-    [client, dispatcher]
+    () => augmentApolloClient({client, dispatcher, enableBubbling}),
+    [client, dispatcher, enableBubbling]
   );
 
   return (
