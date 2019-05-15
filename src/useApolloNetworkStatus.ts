@@ -83,7 +83,7 @@ function latestOperationError(type: OperationTypeNode) {
 function isOptOut(action: NetworkStatusAction) {
   return (
     action.payload &&
-    action.payload.operation.getContext().useNetworkStatusNotifier === false
+    action.payload.operation.getContext().useApolloNetworkStatus === false
   );
 }
 
@@ -93,7 +93,7 @@ const pendingMutations = pendingOperations('mutation');
 const queryError = latestOperationError('query');
 const mutationError = latestOperationError('mutation');
 
-type NetworkStatusState = {
+type NetworkStatus = {
   numPendingQueries: number;
   numPendingMutations: number;
   queryError?: OperationError;
@@ -101,9 +101,9 @@ type NetworkStatusState = {
 };
 
 function reducer(
-  state: NetworkStatusState,
+  state: NetworkStatus,
   action: NetworkStatusAction
-): NetworkStatusState {
+): NetworkStatus {
   const isSubscription =
     action.payload && isOperationType(action.payload.operation, 'subscription');
 
@@ -127,7 +127,7 @@ function reducer(
   return state;
 }
 
-const initialState: NetworkStatusState = {
+const initialState: NetworkStatus = {
   numPendingQueries: 0,
   numPendingMutations: 0
 };
