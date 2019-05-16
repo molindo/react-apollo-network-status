@@ -24,7 +24,11 @@ function GlobalLoadingIndicator() {
   }
 }
 
-const client = new ApolloClient({link: createHttpLink()});
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: createHttpLink()
+});
+
 const element = (
   <ApolloProvider client={client}>
     <ApolloNetworkStatusProvider>

@@ -7,14 +7,14 @@
   "license": "MIT",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
-  "module": "dist/index.mjs",
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
+  "browser": "dist/index.umd.js",
   "scripts": {
     "lint": "eslint './{src,example}/**/*.{ts,tsx}' && tsc --noEmit",
     "test": "jest",
     "build": "yarn lint && yarn test && rm -rf dist && yarn build:compile",
-    "build:compile": "microbundle",
+    "build:compile": "microbundle --format cjs,umd",
     "dev": "parcel example/index.html --port 8080",
     "prepublishOnly": "yarn build"
   },
