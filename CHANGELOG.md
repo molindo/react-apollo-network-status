@@ -5,6 +5,7 @@
 
  - Use hooks for reading the network status.
  - Simplified API, so you no longer have to setup the link manually.
+ - TypeScript support.
  - The reported network status is now more granular, allowing for more flexible usage.
  - You can now scope the reporting of the network status to a given subtree instead of being forced to handle all operations globally.
  - You can nest the new `<ApolloNetworkStatusProvider />` in order to have multiple boundaries where network status will be reported (with optional bubbling configurable with the `enableBubbling` prop).
