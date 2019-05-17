@@ -56,11 +56,11 @@ export default function augmentApolloClient({
 
   // Clone the query manager
   augmentedClient.queryManager = cloneInstance(augmentedClient.queryManager);
-  // @ts-ignore: This property is theoretically optional, however the code above
-  // makes sure that it isn't at this point.
-  augmentedClient.queryManager.link = link;
-  // @ts-ignore: This property can usually only be set during instantiation.
-  augmentedClient.queryManager.deduplicator = new DedupLink().concat(link);
+  if (augmentedClient.queryManager) {
+    augmentedClient.queryManager.link = link;
+    // @ts-ignore: This property could otherwise only be set during instantiation.
+    augmentedClient.queryManager.deduplicator = new DedupLink().concat(link);
+  }
 
   return augmentedClient;
 }

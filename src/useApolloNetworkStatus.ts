@@ -111,20 +111,30 @@ function reducer(
     return state;
   }
 
-  state = {...state};
+  const updatedState = {...state};
 
   // Pending operations
-  state.numPendingQueries = pendingQueries(state.numPendingQueries, action);
-  state.numPendingMutations = pendingMutations(
-    state.numPendingMutations,
+  updatedState.numPendingQueries = pendingQueries(
+    updatedState.numPendingQueries,
+    action
+  );
+  updatedState.numPendingMutations = pendingMutations(
+    updatedState.numPendingMutations,
     action
   );
 
   // Latest errors
-  state.queryError = queryError(state.queryError, action);
-  state.mutationError = mutationError(state.mutationError, action);
+  updatedState.queryError = queryError(updatedState.queryError, action);
+  updatedState.mutationError = mutationError(
+    updatedState.mutationError,
+    action
+  );
 
-  return state;
+  // The identity of the state should be kept if possible to avoid unnecessary re-renders.
+  const haveValuesChanged = Object.keys(state).some(
+    key => (updatedState as any)[key] !== (state as any)[key]
+  );
+  return haveValuesChanged ? updatedState : state;
 }
 
 const initialState: NetworkStatus = {
