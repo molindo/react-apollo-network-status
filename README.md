@@ -2,7 +2,7 @@
 
 > Brings information about the global network status from Apollo into React.
 
-This library helps to implement global loading indicators like progress bars or adding global error handling, so you don't have to respond to every error in a component that invokes an operation.
+This library helps with implementing global loading indicators like progress bars or adding global error handling, so you don't have to respond to every error in a component that invokes an operation.
 
 ## Usage
 
@@ -101,7 +101,7 @@ You can nest multiple `<ApolloNetworkStatusProvider />` inside each other. For e
 </ApolloProvider>
 ```
 
-In this example `<LoadingIndicator />` calls `useApolloNetworkStatus`. By default, the operations fired from queries and mutations will only affect consumers of `useApolloNetworkStatus` below a given provider. You can turn on bubbling in order to report network status to parents as well.
+In this example `<LoadingIndicator />` calls `useApolloNetworkStatus`. By default, the operations fired from queries and mutations will only affect consumers of `useApolloNetworkStatus` below a given provider. You can enable bubbling in order to report network status to parents as well.
 
 ```jsx
 <ApolloProvider client={client}>
