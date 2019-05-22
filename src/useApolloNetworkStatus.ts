@@ -1,3 +1,4 @@
+import {useEffect, useRef, useMemo} from 'react';
 import {Operation} from 'apollo-link';
 import {OperationTypeNode, ExecutionResult, GraphQLError} from 'graphql';
 import {ServerError, ServerParseError} from 'apollo-link-http-common';
@@ -21,7 +22,7 @@ function pendingOperations(type: OperationTypeNode) {
     state: number = 0,
     action: NetworkStatusAction
   ) {
-    if (!action.payload || !isOperationType(action.payload.operation, type)) {
+    if (!isOperationType(action.payload.operation, type)) {
       return state;
     }
 
@@ -52,7 +53,7 @@ function latestOperationError(type: OperationTypeNode) {
     state: OperationError | undefined,
     action: NetworkStatusAction
   ): OperationError | undefined {
-    if (!action.payload || !isOperationType(action.payload.operation, type)) {
+    if (!isOperationType(action.payload.operation, type)) {
       return state;
     }
 
@@ -80,13 +81,6 @@ function latestOperationError(type: OperationTypeNode) {
   };
 }
 
-function isOptOut(action: NetworkStatusAction) {
-  return (
-    action.payload &&
-    action.payload.operation.getContext().useApolloNetworkStatus === false
-  );
-}
-
 const pendingQueries = pendingOperations('query');
 const pendingMutations = pendingOperations('mutation');
 
@@ -104,10 +98,7 @@ function reducer(
   state: NetworkStatus,
   action: NetworkStatusAction
 ): NetworkStatus {
-  const isSubscription =
-    action.payload && isOperationType(action.payload.operation, 'subscription');
-
-  if (isOptOut(action) || isSubscription) {
+  if (isOperationType(action.payload.operation, 'subscription')) {
     return state;
   }
 
@@ -142,6 +133,37 @@ const initialState: NetworkStatus = {
   numPendingMutations: 0
 };
 
-export default function useApolloNetworkStatus() {
-  return useApolloNetworkStatusReducer(reducer, initialState);
+function defaultShouldHandle(action: NetworkStatusAction) {
+  // Enable opt-out per operation
+  return action.payload.operation.getContext().useApolloNetworkStatus !== false;
+}
+
+export default function useApolloNetworkStatus(options?: {
+  shouldHandle?: (action: NetworkStatusAction) => boolean;
+}) {
+  if (!options) options = {};
+  const shouldHandle = options.shouldHandle || defaultShouldHandle;
+
+  // Assigning this to a separate ref is a performance optimization to allow
+  // changing this option via props without causing the reducer to change.
+  const shouldHandleRef = useRef(shouldHandle);
+
+  useEffect(() => {
+    if (shouldHandle !== shouldHandleRef.current) {
+      shouldHandleRef.current = shouldHandle;
+    }
+  }, [options, shouldHandle]);
+
+  const configuredReducer = useMemo(
+    () => (state: NetworkStatus, action: NetworkStatusAction) => {
+      if (!shouldHandleRef.current(action)) {
+        return state;
+      }
+
+      return reducer(state, action);
+    },
+    []
+  );
+
+  return useApolloNetworkStatusReducer(configuredReducer, initialState);
 }

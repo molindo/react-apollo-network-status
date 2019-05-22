@@ -38,6 +38,7 @@ export default function DataFetcher({isBroken}: Props) {
   return (
     <p>
       <Query<Data, Variables>
+        context={{useApolloNetworkStatus: true}}
         fetchPolicy="network-only"
         onError={error => {
           // eslint-disable-next-line no-console

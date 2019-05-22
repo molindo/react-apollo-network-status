@@ -1,4 +1,4 @@
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode, useState, SyntheticEvent} from 'react';
 import {ApolloNetworkStatusProvider} from '../src';
 import NetworkStatusReporter from './NetworkStatusReporter';
 
@@ -8,9 +8,14 @@ type Props = {
 
 export default function NetworkStatusBoundary({children}: Props) {
   const [enableBubbling, setEnableBubbling] = useState(false);
+  const [optIn, setHandleOnlyQueries] = useState(false);
 
-  function onToggleBubbling() {
-    setEnableBubbling(!enableBubbling);
+  function onBubblingCheckboxChange(e: SyntheticEvent<HTMLInputElement>) {
+    setEnableBubbling(e.currentTarget.checked);
+  }
+
+  function onOptInCheckboxChange(e: SyntheticEvent<HTMLInputElement>) {
+    setHandleOnlyQueries(e.currentTarget.checked);
   }
 
   return (
@@ -27,12 +32,24 @@ export default function NetworkStatusBoundary({children}: Props) {
             padding: '5px 20px'
           }}
         >
-          <NetworkStatusReporter />
+          <NetworkStatusReporter optIn={optIn} />
           <div>
-            <pre style={{display: 'inline-block'}}>
-              enableBubbling: {String(enableBubbling)}{' '}
-            </pre>
-            <button onClick={onToggleBubbling}>Toggle </button>
+            <label>
+              <input
+                checked={enableBubbling}
+                onChange={onBubblingCheckboxChange}
+                type="checkbox"
+              />
+              Bubbling
+            </label>
+            <label style={{marginLeft: 10}}>
+              <input
+                checked={optIn}
+                onChange={onOptInCheckboxChange}
+                type="checkbox"
+              />
+              Ignore mutation
+            </label>
           </div>
         </div>
         <div style={{padding: '5px 20px'}}>{children}</div>

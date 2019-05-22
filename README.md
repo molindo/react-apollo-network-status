@@ -72,13 +72,26 @@ Useful applications are for example integrating with [NProgress.js](http://ricos
 
 ## Advanced usage
 
-### Opt-out for operations
+### Limit handling to specific operations
 
-The default configuration allows ignoring particular operations by setting a context variable:
+The default configuration enables an **opt-out** behaviour per operation by setting a context variable:
 
 ```js
 // Somewhere in a React component
 mutate({context: {useApolloNetworkStatus: false}});
+```
+
+You can configure an **opt-in** behaviour by configuring an operation whitelist like this:
+
+```js
+// Inside the component handling the network events
+useApolloNetworkStatus({
+  shouldHandle: (action: NetworkStatusAction) =>
+    action.payload.operation.getContext().useApolloNetworkStatus === true
+});
+
+// Somewhere in a React component
+mutate({context: {useApolloNetworkStatus: true}});
 ```
 
 ### Bubbling

@@ -9,7 +9,7 @@ export type NetworkStatusAction = {
     | typeof ActionTypes.ERROR
     | typeof ActionTypes.SUCCESS
     | typeof ActionTypes.CANCEL;
-  payload?: {
+  payload: {
     operation: Operation;
     result?: ExecutionResult;
     graphqlErrors?: GraphQLError[];

@@ -1,8 +1,19 @@
 import React from 'react';
-import {useApolloNetworkStatus} from '../src';
+import {useApolloNetworkStatus, NetworkStatusAction} from '../src';
 
-export default function NetworkStatusReporter() {
-  const status = useApolloNetworkStatus();
+type Props = {
+  optIn?: boolean;
+};
+
+export default function NetworkStatusReporter({optIn}: Props) {
+  const options = optIn
+    ? {
+        shouldHandle: (action: NetworkStatusAction) =>
+          action.payload.operation.getContext().useApolloNetworkStatus === true
+      }
+    : undefined;
+
+  const status = useApolloNetworkStatus(options);
 
   let statusMessage;
   if (status.numPendingQueries > 0 || status.numPendingMutations > 0) {
