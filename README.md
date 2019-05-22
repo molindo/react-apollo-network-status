@@ -81,7 +81,7 @@ The default configuration enables an **opt-out** behaviour per operation by sett
 mutate({context: {useApolloNetworkStatus: false}});
 ```
 
-You can configure an **opt-in** behaviour by configuring an operation whitelist like this:
+You can configure an **opt-in** behaviour by specifying an operation whitelist like this:
 
 ```js
 // Inside the component handling the network events
