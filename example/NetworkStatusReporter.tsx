@@ -1,5 +1,6 @@
 import React from 'react';
-import {useApolloNetworkStatus, NetworkStatusAction} from '../src';
+import {Operation} from 'apollo-link';
+import {useApolloNetworkStatus} from '../src';
 
 type Props = {
   optIn?: boolean;
@@ -8,8 +9,8 @@ type Props = {
 export default function NetworkStatusReporter({optIn}: Props) {
   const options = optIn
     ? {
-        shouldHandle: (action: NetworkStatusAction) =>
-          action.payload.operation.getContext().useApolloNetworkStatus === true
+        shouldHandleOperation: (operation: Operation) =>
+          operation.getContext().useApolloNetworkStatus === true
       }
     : undefined;
 

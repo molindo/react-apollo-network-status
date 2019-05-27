@@ -130,33 +130,36 @@ function reducer(
 
 const initialState: NetworkStatus = {
   numPendingQueries: 0,
-  numPendingMutations: 0
+  numPendingMutations: 0,
+  queryError: undefined,
+  mutationError: undefined
 };
 
-function defaultShouldHandle(action: NetworkStatusAction) {
+function defaultShouldHandleOperation(operation: Operation) {
   // Enable opt-out per operation
-  return action.payload.operation.getContext().useApolloNetworkStatus !== false;
+  return operation.getContext().useApolloNetworkStatus !== false;
 }
 
 export default function useApolloNetworkStatus(options?: {
-  shouldHandle?: (action: NetworkStatusAction) => boolean;
+  shouldHandleOperation?: (operation: Operation) => boolean;
 }) {
   if (!options) options = {};
-  const shouldHandle = options.shouldHandle || defaultShouldHandle;
+  const shouldHandleOperation =
+    options.shouldHandleOperation || defaultShouldHandleOperation;
 
   // Assigning this to a separate ref is a performance optimization to allow
   // changing this option via props without causing the reducer to change.
-  const shouldHandleRef = useRef(shouldHandle);
+  const shouldHandleOperationRef = useRef(shouldHandleOperation);
 
   useEffect(() => {
-    if (shouldHandle !== shouldHandleRef.current) {
-      shouldHandleRef.current = shouldHandle;
+    if (shouldHandleOperation !== shouldHandleOperationRef.current) {
+      shouldHandleOperationRef.current = shouldHandleOperation;
     }
-  }, [options, shouldHandle]);
+  }, [options, shouldHandleOperation]);
 
   const configuredReducer = useMemo(
     () => (state: NetworkStatus, action: NetworkStatusAction) => {
-      if (!shouldHandleRef.current(action)) {
+      if (!shouldHandleOperationRef.current(action.payload.operation)) {
         return state;
       }
 

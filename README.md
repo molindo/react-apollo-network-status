@@ -86,8 +86,8 @@ You can configure an **opt-in** behaviour by specifying an operation whitelist l
 ```js
 // Inside the component handling the network events
 useApolloNetworkStatus({
-  shouldHandle: (action: NetworkStatusAction) =>
-    action.payload.operation.getContext().useApolloNetworkStatus === true
+  shouldHandleOperation: (operation: Operation) =>
+    operation.getContext().useApolloNetworkStatus === true
 });
 
 // Somewhere in a React component
