@@ -2,119 +2,161 @@
 
 > Brings information about the global network status from Apollo into React.
 
-This library helps to implement global loading indicators like progress bars or adding global error handling, so you don't have to respond to every error in a component that invokes an operation.
+[<img src="https://img.shields.io/npm/dw/react-apollo-network-status.svg" />](https://www.npmjs.com/package/react-apollo-network-status)
+
+This library helps with implementing global loading indicators like progress bars or adding global error handling, so you don't have to respond to every error in a component that invokes an operation.
 
 ## Usage
 
 ```js
-import React, {Fragment} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import {ApolloClient} from 'apollo-client';
-import {createNetworkStatusNotifier} from 'react-apollo-network-status';
 import {createHttpLink} from 'apollo-link-http';
+import {ApolloProvider} from 'react-apollo';
+import {ApolloNetworkStatusProvider, useApolloNetworkStatus} from 'react-apollo-network-status';
 
-const {
-  NetworkStatusNotifier,
-  link: networkStatusNotifierLink
-} = createNetworkStatusNotifier();
+function GlobalLoadingIndicator() {
+  const status = useApolloNetworkStatus();
+
+  if (status.numPendingQueries > 0) {
+    return <p>Loading …</p>;
+  } else {
+    return null;
+  }
+}
 
 const client = new ApolloClient({
-  link: networkStatusNotifierLink.concat(createHttpLink())
+  cache: new InMemoryCache(),
+  link: createHttpLink()
 });
 
-// Render the notifier along with the app. The `NetworkStatusNotifier`
-// can be placed anywhere (also outside of ApolloProvider).
 const element = (
   <ApolloProvider client={client}>
-    <NetworkStatusNotifier render={({loading, error}) => (
-      <div>
-        {loading && <p>Loading …</p>}
-        {error && <p>Error: {JSON.stringify(error)}</p>}
-      </div>
-    )} />
-    <App />
+    <ApolloNetworkStatusProvider>
+      <GlobalLoadingIndicator />
+      <App />
+    </ApolloNetworkStatusProvider>
   </ApolloProvider>
 );
-const node = document.getElementById('root');
-ReactDOM.render(element, node);
+ReactDOM.render(element, document.getElementById('root'));
 ```
 
-The `NetworkStatusNotifier` provides a [render prop](https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce#cf12) which exposes the following properties:
- - `loading`: `boolean`
- - `error`:
-   - `operation`: [`Operation`](https://github.com/apollographql/apollo-link/blob/8ceba7322b533a26ea1e886aba5faa6af1937232/packages/apollo-link/src/types.ts#L12)
-   - `response?`: [`ExecutionResult`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/execution/execute.js#L108)
-   - `graphQLErrors?`: [`GraphQLError[]`](https://github.com/graphql/graphql-js/blob/358df97ac00f6abf7591277853e0e828a13a28bb/src/error/GraphQLError.js#L22)
-   - `networkError?`: [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)
+The hook `useApolloNetworkStatus` provides an object with the following properties:
 
-The `loading` property will be `true` when there is at least one pending query or mutation. Note that subscriptions don't affect this property, however they can potentially set the `error` property.
+```tsx
+type NetworkStatus = {
+  // The number of queries which are currently in flight.
+  numPendingQueries: number;
+  
+  // The number of mutations which are currently in flight.
+  numPendingMutations: number;
 
-The `error` object has the same structure, as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error).
+  // The latest query error that has occured. This will be reset once the next query starts.
+  queryError?: OperationError;
 
-By default the `error` will be set to `null` when a new operation is started.
+  // The latest mutation error that has occured. This will be reset once the next mutation starts.
+  mutationError?: OperationError;
+};
+
+type OperationError = {
+  networkError?: Error | ServerError | ServerParseError;
+  operation?: Operation;
+  response?: ExecutionResult;
+  graphQLErrors?: ReadonlyArray<GraphQLError>;
+};
+```
+
+The error objects have the same structure as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error). Subscriptions currently don't affect the status returned by `useApolloNetworkStatus`.
+
 
 Useful applications are for example integrating with [NProgress.js](http://ricostacruz.com/nprogress/) or showing errors with [snackbars from Material UI](http://www.material-ui.com/#/components/snackbar).
 
 ## Advanced usage
 
-### Configuration
+### Limit handling to specific operations
 
-There are a few properties which can be configured:
-
-```js
-createNetworkStatusNotifier({
-  initialState: {numPendingRequests: 0},
-
-  // These are pure functions that map the state to the next
-  // state depending on the current operation and its result.
-  reducers: {
-    onRequest: (state, {operation}) => ({
-      numPendingRequests: state.numPendingRequests + 1
-    }),
-    onSuccess: (state, {operation, result}) => ({
-      numPendingRequests: state.numPendingRequests - 1
-    }),
-    onError: (state, {operation, networkError}) => ({
-      numPendingRequests: state.numPendingRequests - 1
-    }),
-    onCancel: (state, {operation, networkError}) => ({
-      numPendingRequests: state.numPendingRequests - 1
-    })
-  },
-
-  // Takes the state and maps it to a different data structure
-  // that will be provided by the render prop (optional).
-  mapStateToProps: state => ({
-    loading: state.numPendingRequests > 0
-  })
-});
-```
-
-### Opt-out for operations
-
-The default configuration allows ignoring particular operations by setting a context variable:
+The default configuration enables an **opt-out** behaviour per operation by setting a context variable:
 
 ```js
 // Somewhere in a React component
-mutate({context: {useNetworkStatusNotifier: false}});
+mutate({context: {useApolloNetworkStatus: false}});
 ```
 
-You can also choose to only consider particular operation types like mutations if you handle query errors in the components themselves. For this to work, you can provide a custom configuration that contains code like this:
+You can configure an **opt-in** behaviour by specifying an operation whitelist like this:
 
 ```js
-reducers: {
-  // ... other reducers
+// Inside the component handling the network events
+useApolloNetworkStatus({
+  shouldHandleOperation: (operation: Operation) =>
+    operation.getContext().useApolloNetworkStatus === true
+});
 
-  onError: (state, {operation}) => {
-    const isMutation = operation.query.definitions.some(definition =>
-      definition.kind === 'OperationDefinition'
-      && definition.operation === 'mutation'
-    );
+// Somewhere in a React component
+mutate({context: {useApolloNetworkStatus: true}});
+```
 
-    // Returning the previous state means no update necessary.
-    if (!isMutation) return state;
+### Bubbling
 
-    // ...
+You can nest multiple `<ApolloNetworkStatusProvider />` inside each other. For example:
+
+```jsx
+<ApolloProvider client={client}>
+  <ApolloNetworkStatusProvider>
+    <SomeComponentWithAQuery />
+    <LoadingIndicator />
+
+    <ApolloNetworkStatusProvider>
+      {/* When this query begins to load only the indicator below will be triggered. */}
+      <AnotherComponentWithAQuery />
+      <LoadingIndicator />
+    </ApolloNetworkStatusProvider>
+
+  </ApolloNetworkStatusProvider>
+</ApolloProvider>
+```
+
+In this example `<LoadingIndicator />` calls `useApolloNetworkStatus`. By default, the operations fired from queries and mutations will only affect consumers of `useApolloNetworkStatus` below a given provider. You can enable bubbling in order to report network status to parents as well.
+
+```jsx
+<ApolloProvider client={client}>
+  <ApolloNetworkStatusProvider>
+    <SomeComponentWithAQuery />
+    <LoadingIndicator />
+
+    <ApolloNetworkStatusProvider enableBubbling>
+      {/* When this query begins to load also the indicator above will be triggered. */}
+      <AnotherComponentWithAQuery />
+      <LoadingIndicator />
+    </ApolloNetworkStatusProvider>
+
+  </ApolloNetworkStatusProvider>
+</ApolloProvider>
+```
+
+### Custom state
+
+You can fully control how operations are mapped to state by providing a custom reducer to a separate low-level hook.
+
+```tsx
+import {ActionTypes, useApolloNetworkStatusReducer} from 'react-apollo-network-status';
+
+const initialState = 0;
+
+function reducer(state: number, action: NetworkStatusAction) {
+  switch (action.type) {
+    case ActionTypes.REQUEST:
+      return state + 1;
+
+    case ActionTypes.ERROR:
+    case ActionTypes.SUCCESS:
+    case ActionTypes.CANCEL:
+      return state - 1;
   }
+}
+
+function GlobalLoadingIndicator() {
+  const numPendingQueries = useApolloNetworkStatusReducer(reducer, initialState);
+  return <p>Pending queries: {numPendingQueries}</p>;
 }
 ```
