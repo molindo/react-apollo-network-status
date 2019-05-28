@@ -8,14 +8,14 @@ type Props = {
 
 export default function NetworkStatusBoundary({children}: Props) {
   const [enableBubbling, setEnableBubbling] = useState(false);
-  const [optIn, setHandleOnlyQueries] = useState(false);
+  const [optIn, setOptIn] = useState(false);
 
   function onBubblingCheckboxChange(e: SyntheticEvent<HTMLInputElement>) {
     setEnableBubbling(e.currentTarget.checked);
   }
 
   function onOptInCheckboxChange(e: SyntheticEvent<HTMLInputElement>) {
-    setHandleOnlyQueries(e.currentTarget.checked);
+    setOptIn(e.currentTarget.checked);
   }
 
   return (

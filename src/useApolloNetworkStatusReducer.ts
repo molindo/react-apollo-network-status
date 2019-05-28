@@ -30,7 +30,7 @@ export default function useApolloNetworkStatusReducer<T>(
   useLayoutEffect(() => {
     dispatcher.addListener(dispatch);
     return () => dispatcher.removeListener(dispatch);
-  }, [dispatcher, reducer, status]);
+  }, [dispatcher]);
 
   return status;
 }

@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import {ApolloProvider} from 'react-apollo';
 import createClient from '../src/__testUtils__/createClient';
 import DataFetcher from './DataFetcher';
-import NetworkStatusBoundary from './NetworkStatusBoundary';
 import DataUpdater from './DataUpdater';
+import NetworkStatusBoundary from './NetworkStatusBoundary';
 
 const client = createClient();
 
