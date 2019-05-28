@@ -2,6 +2,8 @@
 
 > Brings information about the global network status from Apollo into React.
 
+[<img src="https://img.shields.io/npm/dw/react-apollo-network-status.svg" />](https://www.npmjs.com/package/react-apollo-network-status)
+
 This library helps with implementing global loading indicators like progress bars or adding global error handling, so you don't have to respond to every error in a component that invokes an operation.
 
 ## Usage
