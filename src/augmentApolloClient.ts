@@ -1,5 +1,4 @@
-import ApolloClient from 'apollo-client';
-import {DedupLink} from 'apollo-link-dedup';
+import ApolloClient, {ApolloClientOptions} from 'apollo-client';
 import ApolloLinkNetworkStatus from './ApolloLinkNetworkStatus';
 import Dispatcher from './Dispatcher';
 
@@ -15,18 +14,36 @@ import Dispatcher from './Dispatcher';
  * and to patch the link on the new instance.
  */
 
-function cloneInstance<T>(original: T): T {
-  const prototype = Object.getPrototypeOf(original);
-  const clone = Object.assign(Object.create(prototype), original);
+function cloneApolloClient(
+  client: ApolloClient<any>,
+  options: ApolloClientOptions<any>
+): ApolloClient<any> {
+  const clone = new ApolloClient({
+    // copy from existing
+    cache: client.cache,
+    queryDeduplication: client.queryDeduplication,
+    defaultOptions: client.defaultOptions,
+    typeDefs: client.typeDefs,
 
-  // Apollo Client binds methods in the constructur via `.bind`. Therefore just
-  // copying the methods to the new instance isn't enough, but these ones need to
-  // be bound to the clone manually.
-  Object.keys(prototype).forEach(key => {
-    if (typeof prototype[key] === 'function') {
-      clone[key] = prototype[key].bind(clone);
-    }
+    // Has different name on class than the config properties
+    ssrMode: client.disableNetworkFetches,
+
+    // needs to be added
+    ssrForceFetchDelay: client.ssrForceFetchDelay,
+    connectToDevTools: client.connectToDevTools,
+    queryManager: client.queryManager,
+
+    // not necessary as only forwarded to query manager:
+    // assumeImmutableResults, name, version
+
+    ...options
   });
+
+  // Not available via constructor, but via setter
+  clone.setResolvers(client.getResolvers());
+
+  // new
+  clone.setLocalStateFragmentMatcher(client.getLocalStateFragmentMatcher());
 
   return clone;
 }
@@ -50,17 +67,5 @@ export default function augmentApolloClient({
     client.link
   );
 
-  // Clone the client
-  const augmentedClient = cloneInstance(client);
-  augmentedClient.link = link;
-
-  // Clone the query manager
-  augmentedClient.queryManager = cloneInstance(augmentedClient.queryManager);
-  if (augmentedClient.queryManager) {
-    augmentedClient.queryManager.link = link;
-    // @ts-ignore: This property could otherwise only be set during instantiation.
-    augmentedClient.queryManager.deduplicator = new DedupLink().concat(link);
-  }
-
-  return augmentedClient;
+  return cloneApolloClient(client, {link});
 }
