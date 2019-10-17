@@ -1,4 +1,10 @@
-import {ApolloLink, Observable, Operation, NextLink} from 'apollo-link';
+import {
+  ApolloLink,
+  Observable,
+  Operation,
+  NextLink,
+  FetchResult
+} from 'apollo-link';
 import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';
 
@@ -23,7 +29,7 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
 
     let shouldDispatch = true;
     if (context.isNetworkStatusHandled !== true && !this.enableBubbling) {
-      operation.setContext({isNetworkStatusHandled: true});
+      operation.setContext({ isNetworkStatusHandled: true });
     } else {
       shouldDispatch = context.isNetworkStatusHandled !== true;
     }
@@ -31,13 +37,13 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
     if (shouldDispatch) {
       this.dispatcher.dispatch({
         type: ActionTypes.REQUEST,
-        payload: {operation}
+        payload: { operation }
       });
     }
 
     const subscriber = forward(operation);
 
-    return new Observable(observer => {
+    return new Observable<FetchResult>(observer => {
       let isPending = true;
 
       const subscription = subscriber.subscribe({
@@ -47,7 +53,7 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
           if (shouldDispatch) {
             this.dispatcher.dispatch({
               type: ActionTypes.SUCCESS,
-              payload: {operation, result}
+              payload: { operation, result }
             });
           }
 
@@ -60,7 +66,7 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
           if (shouldDispatch) {
             this.dispatcher.dispatch({
               type: ActionTypes.ERROR,
-              payload: {operation, networkError}
+              payload: { operation, networkError }
             });
           }
 
@@ -74,7 +80,7 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
         if (shouldDispatch && isPending) {
           this.dispatcher.dispatch({
             type: ActionTypes.CANCEL,
-            payload: {operation}
+            payload: { operation }
           });
         }
 
