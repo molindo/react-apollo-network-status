@@ -1,6 +1,6 @@
-import React, {FormEvent} from 'react';
+import React, {FormEvent, useState} from 'react';
 import gql from 'graphql-tag';
-import {Mutation} from 'react-apollo';
+import {useMutation} from '@apollo/react-hooks';
 import usePendingPromise from './usePendingPromise';
 
 const mutation = gql`
@@ -27,32 +27,36 @@ interface Variables {
 }
 
 export default function DataUpdater() {
+  const [name, setName] = useState('');
+  const [updateUser] = useMutation<Data, Variables>(mutation);
   const [submissionPromise, setSubmissionPromise] = usePendingPromise<any>();
 
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const result = updateUser({
+      variables: {
+        id: '1',
+        user: {name}
+      }
+    });
+
+    setSubmissionPromise(result);
+  }
+
+  function onNameInputChange(event: FormEvent<HTMLInputElement>) {
+    setName(event.currentTarget.value);
+  }
+
   return (
-    <Mutation<Data, Variables> mutation={mutation}>
-      {updateUser => {
-        function onSubmit(e: FormEvent) {
-          e.preventDefault();
-
-          const nameInput = e.currentTarget.children[0];
-          if (!(nameInput instanceof HTMLInputElement)) {
-            throw new Error('`name` input not found');
-          }
-
-          const result = updateUser({
-            variables: {id: '1', user: {name: nameInput.value}}
-          });
-          setSubmissionPromise(result);
-        }
-
-        return (
-          <form onSubmit={onSubmit}>
-            <input name="name" placeholder="Update user name" type="text" />{' '}
-            <input disabled={submissionPromise != null} type="submit" />
-          </form>
-        );
-      }}
-    </Mutation>
+    <form onSubmit={onSubmit}>
+      <input
+        onChange={onNameInputChange}
+        placeholder="Update user name"
+        type="text"
+        value={name}
+      />{' '}
+      <input disabled={submissionPromise != null} type="submit" />
+    </form>
   );
 }

@@ -13,7 +13,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {ApolloClient} from 'apollo-client';
 import {createHttpLink} from 'apollo-link-http';
-import {ApolloProvider} from 'react-apollo';
+import {ApolloProvider} from '@apollo/react-common';
 import {ApolloNetworkStatusProvider, useApolloNetworkStatus} from 'react-apollo-network-status';
 
 function GlobalLoadingIndicator() {
@@ -68,7 +68,6 @@ type OperationError = {
 ```
 
 The error objects have the same structure as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error). Subscriptions currently don't affect the status returned by `useApolloNetworkStatus`.
-
 
 Useful applications are for example integrating with [NProgress.js](http://ricostacruz.com/nprogress/) or showing errors with [snackbars from Material UI](http://www.material-ui.com/#/components/snackbar).
 

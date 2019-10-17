@@ -10,17 +10,15 @@ export default function NetworkStatusBoundary({children}: Props) {
   const [enableBubbling, setEnableBubbling] = useState(false);
   const [optIn, setOptIn] = useState(false);
 
-  function onBubblingCheckboxChange(e: SyntheticEvent<HTMLInputElement>) {
-    setEnableBubbling(e.currentTarget.checked);
+  function onBubblingCheckboxChange(event: SyntheticEvent<HTMLInputElement>) {
+    setEnableBubbling(event.currentTarget.checked);
   }
 
-  function onOptInCheckboxChange(e: SyntheticEvent<HTMLInputElement>) {
-    setOptIn(e.currentTarget.checked);
+  function onOptInCheckboxChange(event: SyntheticEvent<HTMLInputElement>) {
+    setOptIn(event.currentTarget.checked);
   }
 
   return (
-    // @ts-ignore False positive which asks for `client` property. This
-    // prop is injected via a HOC and not needed here.
     <ApolloNetworkStatusProvider enableBubbling={enableBubbling}>
       <div style={{backgroundColor: '#2368841a'}}>
         <div
@@ -48,7 +46,7 @@ export default function NetworkStatusBoundary({children}: Props) {
                 onChange={onOptInCheckboxChange}
                 type="checkbox"
               />
-              Ignore mutation
+              Ignore mutation loading state
             </label>
           </div>
         </div>

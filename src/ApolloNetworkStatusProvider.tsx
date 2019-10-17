@@ -1,22 +1,23 @@
-import React, {useMemo, ReactNode} from 'react';
-import {withApollo, ApolloProvider} from 'react-apollo';
-import ApolloClient from 'apollo-client';
+import React, {useMemo, ReactNode, useContext} from 'react';
+import {ApolloProvider, getApolloContext} from '@apollo/react-common';
 import Dispatcher from './Dispatcher';
 import ApolloNetworkStatusDispatcherContext from './ApolloNetworkStatusDispatcherContext';
 import augmentApolloClient from './augmentApolloClient';
 
 type Props = {
-  client: ApolloClient<any>;
   children: ReactNode;
   enableBubbling?: boolean;
 };
 
-function ApolloNetworkStatusProvider({
-  client,
-  children,
-  enableBubbling
-}: Props) {
+function ApolloNetworkStatusProvider({children, enableBubbling}: Props) {
+  const {client} = useContext(getApolloContext());
   const dispatcher = useMemo(() => new Dispatcher(), []);
+
+  if (!client) {
+    throw new Error(
+      '`ApolloNetworkStatusProvider` needs to be placed below `ApolloProvider`.'
+    );
+  }
 
   const augmentedClient = useMemo(
     () => augmentApolloClient({client, dispatcher, enableBubbling}),
@@ -32,4 +33,4 @@ function ApolloNetworkStatusProvider({
   );
 }
 
-export default withApollo(ApolloNetworkStatusProvider);
+export default ApolloNetworkStatusProvider;

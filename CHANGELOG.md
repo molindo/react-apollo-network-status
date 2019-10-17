@@ -1,4 +1,16 @@
 # Changelog
+
+## 3.0
+
+### New features
+
+ - Support for `@apollo/react-*` packages.
+
+### Breaking changes
+
+ - Raised required peer dependency version of `apollo-client` to `^2.6.0`.
+ - You need to depend on a React integration from one of the `@apollo/react-*` packages. See [upgrade guide](https://www.apollographql.com/docs/react/migrating/hooks-migration/).
+
 ## 2.0
 
 ### New features

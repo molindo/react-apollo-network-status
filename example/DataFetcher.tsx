@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import gql from 'graphql-tag';
-import {Query} from 'react-apollo';
+import {useQuery} from '@apollo/react-hooks';
 import usePendingPromise from './usePendingPromise';
 
 type Props = {
@@ -29,69 +29,57 @@ interface Variables {
 
 export default function DataFetcher({isBroken}: Props) {
   const [skip, setSkip] = useState(true);
+  const {data, loading, error, refetch} = useQuery<Data, Variables>(query, {
+    context: {useApolloNetworkStatus: true},
+    fetchPolicy: 'network-only',
+    skip,
+    variables: isBroken ? undefined : {id: '1'}
+  });
   const [queryPromise, setQueryPromise] = usePendingPromise();
 
-  function onFetch() {
+  function onFetchClick() {
     setSkip(false);
   }
 
-  return (
-    <p>
-      <Query<Data, Variables>
-        context={{useApolloNetworkStatus: true}}
-        fetchPolicy="network-only"
-        onError={error => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }}
-        query={query}
-        skip={skip}
-        variables={isBroken ? undefined : {id: '1'}}
-      >
-        {({data, loading, error, refetch}) => {
-          function onRefetchClick() {
-            const result = refetch();
-            setQueryPromise(result);
-          }
+  function onRefetchClick() {
+    const result = refetch();
+    setQueryPromise(result);
+  }
 
-          function onRetryClick() {
-            refetch();
-          }
+  function onRetryClick() {
+    refetch();
+  }
 
-          if (skip) {
-            return (
-              <span>
-                Idle{' '}
-                <button onClick={onFetch}>
-                  {isBroken ? 'Broken fetch' : 'Fetch'}
-                </button>
-              </span>
-            );
-          }
+  let content;
+  if (skip) {
+    content = (
+      <>
+        Idle{' '}
+        <button onClick={onFetchClick}>
+          {isBroken ? 'Broken fetch' : 'Fetch'}
+        </button>
+      </>
+    );
+  } else if (data && data.user) {
+    content = (
+      <>
+        User: {data.user.name}{' '}
+        <button disabled={queryPromise != null} onClick={onRefetchClick}>
+          Refetch
+        </button>
+      </>
+    );
+  } else if (loading) {
+    content = 'Loading …';
+  } else if (error) {
+    content = (
+      <>
+        Error <button onClick={onRetryClick}>Retry</button>{' '}
+      </>
+    );
+  } else {
+    throw new Error('Unexpected state');
+  }
 
-          return (
-            <span>
-              {data && data.user ? (
-                <span>
-                  User: {data.user.name}{' '}
-                  <button
-                    disabled={queryPromise != null}
-                    onClick={onRefetchClick}
-                  >
-                    Refetch
-                  </button>
-                </span>
-              ) : loading ? (
-                'Loading …'
-              ) : error ? (
-                <>
-                  Error <button onClick={onRetryClick}>Retry</button>
-                </>
-              ) : null}
-            </span>
-          );
-        }}
-      </Query>
-    </p>
-  );
+  return <p>{content}</p>;
 }
