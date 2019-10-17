@@ -1,8 +1,8 @@
 import ApolloClient from 'apollo-client';
-import { DedupLink } from 'apollo-link-dedup';
+import {DedupLink} from 'apollo-link-dedup';
 import ApolloLinkNetworkStatus from './ApolloLinkNetworkStatus';
 import Dispatcher from './Dispatcher';
-import { Mutable } from './types';
+import {Mutable} from './types';
 /**
  * Maintainer notice: The goal here is to create a new Apollo Client instance
  * which has the network status link added. Instantiating a new client doesn't
