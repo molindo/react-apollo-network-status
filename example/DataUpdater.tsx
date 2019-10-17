@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
-import React, {FormEvent, useState, useEffect} from 'react';
+import React, {FormEvent, useState} from 'react';
 
 const mutation = gql`
   mutation updateUser($id: ID!, $user: UserInput!) {

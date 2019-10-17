@@ -1,7 +1,7 @@
-import {useEffect, useRef, useMemo} from 'react';
 import {Operation} from 'apollo-link';
 import {OperationTypeNode, ExecutionResult, GraphQLError} from 'graphql';
 import {ServerError, ServerParseError} from 'apollo-link-http-common';
+import {useEffect, useRef, useMemo} from 'react';
 import ActionTypes from './ActionTypes';
 import {NetworkStatusAction} from './NetworkStatusAction';
 import useApolloNetworkStatusReducer from './useApolloNetworkStatusReducer';

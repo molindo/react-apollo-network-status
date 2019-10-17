@@ -1,5 +1,5 @@
-import React from 'react';
 import {Operation} from 'apollo-link';
+import React from 'react';
 import {useApolloNetworkStatus} from '../src';
 
 type Props = {

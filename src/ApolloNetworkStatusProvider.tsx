@@ -1,5 +1,5 @@
-import React, {useMemo, ReactNode, useContext} from 'react';
 import {ApolloProvider, getApolloContext} from '@apollo/react-common';
+import React, {useMemo, ReactNode, useContext} from 'react';
 import Dispatcher from './Dispatcher';
 import ApolloNetworkStatusDispatcherContext from './ApolloNetworkStatusDispatcherContext';
 import augmentApolloClient from './augmentApolloClient';

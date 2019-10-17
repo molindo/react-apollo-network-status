@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
 import {useQuery} from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import React, {useState, useEffect} from 'react';
 
 type Props = {
