@@ -42,6 +42,10 @@ const element = (
 ReactDOM.render(element, document.getElementById('root'));
 ```
 
+> **Note:** The current version of this library supports the latest [`@apollo/react-*` packages](https://www.apollographql.com/docs/react/migrating/hooks-migration/). If you're using an older version of React Apollo and don't want to upgrade, you can use an older version of this library (see [changelog](./CHANGELOG.md)).
+
+## Returned data
+
 The hook `useApolloNetworkStatus` provides an object with the following properties:
 
 ```tsx
