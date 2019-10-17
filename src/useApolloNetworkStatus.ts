@@ -10,6 +10,20 @@ import useApolloNetworkStatusReducer from './useApolloNetworkStatusReducer';
  * Applies reasonable defaults to `useApolloNetworkStatusReducer`.
  */
 
+export type OperationError = {
+  networkError?: Error | ServerError | ServerParseError;
+  operation?: Operation;
+  response?: ExecutionResult;
+  graphQLErrors?: ReadonlyArray<GraphQLError>;
+};
+
+export type NetworkStatus = {
+  numPendingQueries: number;
+  numPendingMutations: number;
+  queryError?: OperationError;
+  mutationError?: OperationError;
+};
+
 function isOperationType(operation: Operation, type: OperationTypeNode) {
   return operation.query.definitions.some(
     definition =>
@@ -40,13 +54,6 @@ function pendingOperations(type: OperationTypeNode) {
     return state;
   };
 }
-
-type OperationError = {
-  networkError?: Error | ServerError | ServerParseError;
-  operation?: Operation;
-  response?: ExecutionResult;
-  graphQLErrors?: ReadonlyArray<GraphQLError>;
-};
 
 function latestOperationError(type: OperationTypeNode) {
   return function latestOperationErrorByType(
@@ -86,13 +93,6 @@ const pendingMutations = pendingOperations('mutation');
 
 const queryError = latestOperationError('query');
 const mutationError = latestOperationError('mutation');
-
-type NetworkStatus = {
-  numPendingQueries: number;
-  numPendingMutations: number;
-  queryError?: OperationError;
-  mutationError?: OperationError;
-};
 
 function reducer(
   state: NetworkStatus,

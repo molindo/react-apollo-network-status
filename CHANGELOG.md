@@ -5,6 +5,7 @@
 ### New features
 
  - Support for `@apollo/react-*` packages.
+ - Export `NetworkStatus` and `OperationError` types for TypeScript users.
 
 ### Breaking changes
 

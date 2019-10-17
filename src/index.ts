@@ -1,7 +1,11 @@
 export {
   default as ApolloNetworkStatusProvider
 } from './ApolloNetworkStatusProvider';
-export {default as useApolloNetworkStatus} from './useApolloNetworkStatus';
+export {
+  default as useApolloNetworkStatus,
+  OperationError,
+  NetworkStatus
+} from './useApolloNetworkStatus';
 export {
   default as useApolloNetworkStatusReducer
 } from './useApolloNetworkStatusReducer';
