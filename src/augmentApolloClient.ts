@@ -1,8 +1,8 @@
 import ApolloClient from 'apollo-client';
-import {DedupLink} from 'apollo-link-dedup';
+import { DedupLink } from 'apollo-link-dedup';
 import ApolloLinkNetworkStatus from './ApolloLinkNetworkStatus';
 import Dispatcher from './Dispatcher';
-
+import { Mutable } from './types';
 /**
  * Maintainer notice: The goal here is to create a new Apollo Client instance
  * which has the network status link added. Instantiating a new client doesn't
@@ -46,16 +46,20 @@ export default function augmentApolloClient({
     client.initQueryManager();
   }
 
-  const link = new ApolloLinkNetworkStatus({dispatcher, enableBubbling}).concat(
-    client.link
-  );
+  const link = new ApolloLinkNetworkStatus({
+    dispatcher,
+    enableBubbling
+  }).concat(client.link);
 
   // Clone the client
   const augmentedClient = cloneInstance(client);
   augmentedClient.link = link;
 
   // Clone the query manager
-  augmentedClient.queryManager = cloneInstance(augmentedClient.queryManager);
+  (augmentedClient as Mutable<ApolloClient<any>>).queryManager = cloneInstance(
+    augmentedClient.queryManager
+  );
+
   if (augmentedClient.queryManager) {
     augmentedClient.queryManager.link = link;
     // @ts-ignore: This property could otherwise only be set during instantiation.
