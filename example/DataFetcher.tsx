@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
 import gql from 'graphql-tag';
 import {useQuery} from '@apollo/react-hooks';
-import usePendingPromise from './usePendingPromise';
+import React, {useState, useEffect} from 'react';
 
 type Props = {
   isBroken?: boolean;
@@ -31,24 +30,27 @@ export default function DataFetcher({isBroken}: Props) {
   const [skip, setSkip] = useState(true);
   const {data, loading, error, refetch} = useQuery<Data, Variables>(query, {
     context: {useApolloNetworkStatus: true},
+    notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
     skip,
     variables: isBroken ? undefined : {id: '1'}
   });
-  const [queryPromise, setQueryPromise] = usePendingPromise();
 
   function onFetchClick() {
     setSkip(false);
   }
 
   function onRefetchClick() {
-    const result = refetch();
-    setQueryPromise(result);
+    refetch();
   }
 
   function onRetryClick() {
     refetch();
   }
+
+  useEffect(() => {
+    if (error) console.error(error);
+  }, [error]);
 
   let content;
   if (skip) {
@@ -64,7 +66,7 @@ export default function DataFetcher({isBroken}: Props) {
     content = (
       <>
         User: {data.user.name}{' '}
-        <button disabled={queryPromise != null} onClick={onRefetchClick}>
+        <button disabled={loading} onClick={onRefetchClick}>
           Refetch
         </button>
       </>

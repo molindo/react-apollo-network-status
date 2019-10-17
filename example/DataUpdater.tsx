@@ -1,7 +1,6 @@
-import React, {FormEvent, useState} from 'react';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
-import usePendingPromise from './usePendingPromise';
+import React, {FormEvent, useState, useEffect} from 'react';
 
 const mutation = gql`
   mutation updateUser($id: ID!, $user: UserInput!) {
@@ -28,20 +27,11 @@ interface Variables {
 
 export default function DataUpdater() {
   const [name, setName] = useState('');
-  const [updateUser] = useMutation<Data, Variables>(mutation);
-  const [submissionPromise, setSubmissionPromise] = usePendingPromise<any>();
+  const [updateUser, result] = useMutation<Data, Variables>(mutation);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const result = updateUser({
-      variables: {
-        id: '1',
-        user: {name}
-      }
-    });
-
-    setSubmissionPromise(result);
+    updateUser({variables: {id: '1', user: {name}}});
   }
 
   function onNameInputChange(event: FormEvent<HTMLInputElement>) {
@@ -56,7 +46,7 @@ export default function DataUpdater() {
         type="text"
         value={name}
       />{' '}
-      <input disabled={submissionPromise != null} type="submit" />
+      <input disabled={result.loading} type="submit" />
     </form>
   );
 }
