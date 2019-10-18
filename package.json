@@ -14,7 +14,7 @@
     "lint": "eslint './{src,example}/**/*.{ts,tsx}' && tsc --noEmit",
     "test": "jest",
     "build": "yarn lint && yarn test && rm -rf dist && yarn build:compile",
-    "build:compile": "microbundle --format cjs,umd",
+    "build:compile": "microbundle --format cjs,umd --globals @apollo/react-common=apolloReactCommon,apollo-link=apolloLink",
     "dev": "parcel example/index.html --port 8080",
     "prepublishOnly": "yarn build"
   },
