@@ -47,7 +47,8 @@ function pendingOperations(type: OperationTypeNode) {
       case ActionTypes.ERROR:
       case ActionTypes.SUCCESS:
       case ActionTypes.CANCEL:
-        // Just to be safe. See also useApolloNetworkStatusReducer:27.
+        // Just to be safe. See also the comment about `useEffect`
+        // in `./useApolloNetworkStatusReducer.js`
         return Math.max(state - 1, 0);
     }
 
