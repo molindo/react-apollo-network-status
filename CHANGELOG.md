@@ -12,6 +12,8 @@
  - Raised required peer dependency version of `apollo-client` to `^2.6.0`.
  - You need to depend on a React integration from one of the `@apollo/react-*` packages. See [upgrade guide](https://www.apollographql.com/docs/react/migrating/hooks-migration/).
 
+Special thanks to [Matth10](https://github.com/Matth10), [rcohen-unext](https://github.com/rcohen-unext) and [MasterKale](https://github.com/MasterKale) for beta testing this release in their apps and code review.
+
 ## 2.0
 
 Compatible with `react-apollo@^2`. See [usage instructions](https://github.com/molindo/react-apollo-network-status/tree/e08e7b43e2e3447ec0d9399262d17b162162805e#react-apollo-network-status).
