@@ -1,5 +1,22 @@
 # Changelog
+
+## 3.0
+
+### New features
+
+ - Support for `@apollo/react-*` packages.
+ - Export `NetworkStatus` and `OperationError` types for TypeScript users.
+
+### Breaking changes
+
+ - Raised required peer dependency version of `apollo-client` to `^2.6.0`.
+ - You need to depend on a React integration from one of the `@apollo/react-*` packages. See [upgrade guide](https://www.apollographql.com/docs/react/migrating/hooks-migration/).
+
+Special thanks to [Matth10](https://github.com/Matth10), [rcohen-unext](https://github.com/rcohen-unext) and [MasterKale](https://github.com/MasterKale) for beta testing this release in their apps and code review.
+
 ## 2.0
+
+Compatible with `react-apollo@^2`. See [usage instructions](https://github.com/molindo/react-apollo-network-status/tree/e08e7b43e2e3447ec0d9399262d17b162162805e#react-apollo-network-status).
 
 ### New features
 
@@ -18,6 +35,12 @@
  - The opt-out property `context: {useNetworkStatusNotifier: false}` was renamed to `useApolloNetworkStatus`.
  - If you provide a custom reducer, there's now a new signature where you only provide one function which handles action types instead of separate functions. This pattern composes better since you usually have to cover all network events to implement a given feature.
 
+## 1.1
+
+Subscription operations no longer affect the loading property, but they can potentially set the error property (@shurik239 in [#9](https://github.com/molindo/react-apollo-network-status/pull/9)).
+
 ## 1.0
 
-Initial stable release
+Compatible with `react-apollo@<=2`. See [usage instructions](https://github.com/molindo/react-apollo-network-status/tree/583a00f6344e05edcfee90bee0823a7736f56021#react-apollo-network-status).
+
+Initial stable release.

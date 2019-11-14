@@ -13,7 +13,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {ApolloClient} from 'apollo-client';
 import {createHttpLink} from 'apollo-link-http';
-import {ApolloProvider} from 'react-apollo';
+import {ApolloProvider} from '@apollo/react-common';
 import {ApolloNetworkStatusProvider, useApolloNetworkStatus} from 'react-apollo-network-status';
 
 function GlobalLoadingIndicator() {
@@ -42,6 +42,10 @@ const element = (
 ReactDOM.render(element, document.getElementById('root'));
 ```
 
+> **Note:** The current version of this library supports the latest [`@apollo/react-*` packages](https://www.apollographql.com/docs/react/migrating/hooks-migration/). If you're using an older version of React Apollo and don't want to upgrade, you can use an older version of this library (see [changelog](./CHANGELOG.md)).
+
+## Returned data
+
 The hook `useApolloNetworkStatus` provides an object with the following properties:
 
 ```tsx
@@ -68,7 +72,6 @@ type OperationError = {
 ```
 
 The error objects have the same structure as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error). Subscriptions currently don't affect the status returned by `useApolloNetworkStatus`.
-
 
 Useful applications are for example integrating with [NProgress.js](http://ricostacruz.com/nprogress/) or showing errors with [snackbars from Material UI](http://www.material-ui.com/#/components/snackbar).
 

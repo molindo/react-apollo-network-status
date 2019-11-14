@@ -1,5 +1,4 @@
 import ApolloClient from 'apollo-client';
-import {DedupLink} from 'apollo-link-dedup';
 import ApolloLinkNetworkStatus from './ApolloLinkNetworkStatus';
 import Dispatcher from './Dispatcher';
 
@@ -8,8 +7,9 @@ import Dispatcher from './Dispatcher';
  * which has the network status link added. Instantiating a new client doesn't
  * work, as otherwise it would have a separate cache – this would lead to
  * mutation results not being incorporated everywhere. Providing the cache
- * during initialization isn't enough, probably due to separate internal QueryManager
- * instances (they have a list of queries to notify after a mutation result).
+ * during initialization isn't enough, probably due to separate internal
+ * `QueryManager` instances (they have a list of queries to notify after a
+ * mutation result).
  *
  * The approach here is to copy the instance along with all its configuration
  * and to patch the link on the new instance.
@@ -46,21 +46,20 @@ export default function augmentApolloClient({
     client.initQueryManager();
   }
 
-  const link = new ApolloLinkNetworkStatus({dispatcher, enableBubbling}).concat(
-    client.link
-  );
+  const networkStatusLink = new ApolloLinkNetworkStatus({
+    dispatcher,
+    enableBubbling
+  });
+  const link = networkStatusLink.concat(client.link);
 
   // Clone the client
   const augmentedClient = cloneInstance(client);
   augmentedClient.link = link;
 
   // Clone the query manager
+  // @ts-ignore: This property could otherwise only be set during instantiation.
   augmentedClient.queryManager = cloneInstance(augmentedClient.queryManager);
-  if (augmentedClient.queryManager) {
-    augmentedClient.queryManager.link = link;
-    // @ts-ignore: This property could otherwise only be set during instantiation.
-    augmentedClient.queryManager.deduplicator = new DedupLink().concat(link);
-  }
+  augmentedClient.queryManager.link = link;
 
   return augmentedClient;
 }

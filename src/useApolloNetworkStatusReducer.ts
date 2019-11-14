@@ -1,4 +1,4 @@
-import {useContext, useReducer, useLayoutEffect} from 'react';
+import {useContext, useReducer, useEffect} from 'react';
 import ApolloNetworkStatusDispatcherContext from './ApolloNetworkStatusDispatcherContext';
 import Dispatcher from './Dispatcher';
 import {NetworkStatusAction} from './NetworkStatusAction';
@@ -22,12 +22,11 @@ export default function useApolloNetworkStatusReducer<T>(
     );
   }
 
-  // Theoretically we should `useEffect` here. However react-apollo@<=2.5.5 uses
-  // React classes and queries can begin to fire in `componentDidMount`.
-  // Therefore we'd miss the request event of an operation. Once `react-apollo`
-  // has migrated, we could bump the peer dependency and use the correct hook
-  // here for a slight performance improvement.
-  useLayoutEffect(() => {
+  // Effects fire bottom-up. Therefore it's possible that when a query is nested
+  // further down the tree than a component using this hook and the query fires
+  // on the initial render, we'll miss the request event. Note that this isn't
+  // an issue when pre-rendering or -fetching on the server side.
+  useEffect(() => {
     dispatcher.addListener(dispatch);
     return () => dispatcher.removeListener(dispatch);
   }, [dispatcher]);

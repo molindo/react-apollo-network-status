@@ -1,7 +1,7 @@
-import {useEffect, useRef, useMemo} from 'react';
 import {Operation} from 'apollo-link';
 import {OperationTypeNode, ExecutionResult, GraphQLError} from 'graphql';
 import {ServerError, ServerParseError} from 'apollo-link-http-common';
+import {useEffect, useRef, useMemo} from 'react';
 import ActionTypes from './ActionTypes';
 import {NetworkStatusAction} from './NetworkStatusAction';
 import useApolloNetworkStatusReducer from './useApolloNetworkStatusReducer';
@@ -9,6 +9,20 @@ import useApolloNetworkStatusReducer from './useApolloNetworkStatusReducer';
 /**
  * Applies reasonable defaults to `useApolloNetworkStatusReducer`.
  */
+
+export type OperationError = {
+  networkError?: Error | ServerError | ServerParseError;
+  operation?: Operation;
+  response?: ExecutionResult;
+  graphQLErrors?: ReadonlyArray<GraphQLError>;
+};
+
+export type NetworkStatus = {
+  numPendingQueries: number;
+  numPendingMutations: number;
+  queryError?: OperationError;
+  mutationError?: OperationError;
+};
 
 function isOperationType(operation: Operation, type: OperationTypeNode) {
   return operation.query.definitions.some(
@@ -33,20 +47,14 @@ function pendingOperations(type: OperationTypeNode) {
       case ActionTypes.ERROR:
       case ActionTypes.SUCCESS:
       case ActionTypes.CANCEL:
-        // Just to be safe. See also useApolloNetworkStatusReducer:27.
+        // Just to be safe. See also the comment about `useEffect`
+        // in `./useApolloNetworkStatusReducer.js`
         return Math.max(state - 1, 0);
     }
 
     return state;
   };
 }
-
-type OperationError = {
-  networkError?: Error | ServerError | ServerParseError;
-  operation?: Operation;
-  response?: ExecutionResult;
-  graphQLErrors?: ReadonlyArray<GraphQLError>;
-};
 
 function latestOperationError(type: OperationTypeNode) {
   return function latestOperationErrorByType(
@@ -86,13 +94,6 @@ const pendingMutations = pendingOperations('mutation');
 
 const queryError = latestOperationError('query');
 const mutationError = latestOperationError('mutation');
-
-type NetworkStatus = {
-  numPendingQueries: number;
-  numPendingMutations: number;
-  queryError?: OperationError;
-  mutationError?: OperationError;
-};
 
 function reducer(
   state: NetworkStatus,

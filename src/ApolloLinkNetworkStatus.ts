@@ -1,4 +1,10 @@
-import {ApolloLink, Observable, Operation, NextLink} from 'apollo-link';
+import {
+  ApolloLink,
+  Observable,
+  Operation,
+  NextLink,
+  FetchResult
+} from 'apollo-link';
 import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';
 
@@ -18,7 +24,7 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
     this.enableBubbling = enableBubbling === true;
   }
 
-  request(operation: Operation, forward: NextLink) {
+  request(operation: Operation, forward: NextLink): Observable<FetchResult> {
     const context = operation.getContext();
 
     let shouldDispatch = true;
