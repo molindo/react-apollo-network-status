@@ -14,6 +14,8 @@ export default class Dispatcher {
   }
 
   dispatch(action: NetworkStatusAction) {
+    console.log({action});
+
     this.listeners.forEach(currentListener => {
       currentListener(action);
     });

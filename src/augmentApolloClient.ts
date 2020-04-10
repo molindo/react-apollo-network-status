@@ -1,6 +1,12 @@
-import ApolloClient from 'apollo-client';
-import ApolloLinkNetworkStatus from './ApolloLinkNetworkStatus';
+import ApolloClient, {
+  WatchQueryOptions,
+  QueryOptions,
+  ObservableQuery,
+  NetworkStatus
+} from 'apollo-client';
+import {Operation, getOperationName, createOperation} from 'apollo-link';
 import Dispatcher from './Dispatcher';
+import ActionTypes from './ActionTypes';
 
 /**
  * Maintainer notice: The goal here is to create a new Apollo Client instance
@@ -17,18 +23,95 @@ import Dispatcher from './Dispatcher';
 
 function cloneInstance<T>(original: T): T {
   const prototype = Object.getPrototypeOf(original);
-  const clone = Object.assign(Object.create(prototype), original);
+  return Object.assign(Object.create(prototype), original);
+}
 
-  // Apollo Client binds methods in the constructur via `.bind`. Therefore just
-  // copying the methods to the new instance isn't enough, but these ones need to
-  // be bound to the clone manually.
-  Object.keys(prototype).forEach(key => {
-    if (typeof prototype[key] === 'function') {
-      clone[key] = prototype[key].bind(clone);
+function wrapSubscribe({
+  operation,
+  dispatcher,
+  observableQuery
+}: {
+  operation: Operation;
+  dispatcher: Dispatcher;
+  observableQuery: ObservableQuery;
+}) {
+  return (
+    observerOrNext: ((value: any) => void) | ZenObservable.Observer<any>,
+    error?: (error: any) => void,
+    complete?: () => void
+  ): ZenObservable.Subscription => {
+    console.log('subscribe');
+    const shouldDispatch = true;
+    let isPending = true;
+
+    let observer: ZenObservable.Observer<any>;
+    if (typeof observerOrNext === 'function') {
+      observer = {
+        next: observerOrNext,
+        error,
+        complete
+      };
+    } else {
+      observer = observerOrNext;
     }
-  });
 
-  return clone;
+    dispatcher.dispatch({
+      type: ActionTypes.REQUEST,
+      payload: {operation}
+    });
+
+    const subscription = observableQuery.subscribe({
+      next(result) {
+        isPending = false;
+
+        if (shouldDispatch && result.networkStatus === NetworkStatus.ready) {
+          dispatcher.dispatch({
+            type: ActionTypes.SUCCESS,
+            payload: {operation, result}
+          });
+        }
+
+        if (observer.next) {
+          observer.next(result);
+        }
+      },
+
+      error(networkError) {
+        isPending = false;
+
+        if (shouldDispatch) {
+          dispatcher.dispatch({
+            type: ActionTypes.ERROR,
+            payload: {operation, networkError}
+          });
+        }
+
+        if (observer.error) {
+          observer.error(networkError);
+        }
+      },
+
+      complete() {
+        if (observer.complete) {
+          observer.complete();
+        }
+      }
+    });
+
+    return {
+      ...subscription,
+      unsubscribe() {
+        if (shouldDispatch && isPending) {
+          dispatcher.dispatch({
+            type: ActionTypes.CANCEL,
+            payload: {operation}
+          });
+        }
+
+        subscription.unsubscribe();
+      }
+    };
+  };
 }
 
 export default function augmentApolloClient({
@@ -40,26 +123,58 @@ export default function augmentApolloClient({
   dispatcher: Dispatcher;
   enableBubbling?: boolean;
 }): ApolloClient<any> {
-  // Apollo Client <= 2.5.1 initializes the query manager lazily, however this
-  // behaviour is removed in later versions. Ensure that it has been constructed.
-  if (!client.queryManager && client.initQueryManager) {
-    client.initQueryManager();
-  }
-
-  const networkStatusLink = new ApolloLinkNetworkStatus({
-    dispatcher,
-    enableBubbling
-  });
-  const link = networkStatusLink.concat(client.link);
-
-  // Clone the client
   const augmentedClient = cloneInstance(client);
-  augmentedClient.link = link;
 
-  // Clone the query manager
-  // @ts-ignore: This property could otherwise only be set during instantiation.
-  augmentedClient.queryManager = cloneInstance(augmentedClient.queryManager);
-  augmentedClient.queryManager.link = link;
+  augmentedClient.watchQuery = (options: WatchQueryOptions<any>) => {
+    const observableQuery = client.watchQuery(options);
+
+    const operation = createOperation(options.context, {
+      query: options.query,
+      context: options.context,
+      operationName: getOperationName(options.query) || 'query',
+      variables: options.variables
+    });
+
+    // client.queryManager;
+
+    const augmentedObservableQuery = cloneInstance(observableQuery);
+    const augmentedQueryManager = cloneInstance(client.queryManager);
+
+    augmentedObservableQuery.queryManager = augmentedQueryManager;
+
+    augmentedObservableQuery.setOptions = options => {
+      console.log('set options', {options});
+      // Only the request needs to be dispatched, the success
+      // and error state is handled by the subscription.
+      dispatcher.dispatch({
+        type: ActionTypes.REQUEST,
+        payload: {operation}
+      });
+
+      return observableQuery.setOptions(options);
+    };
+
+    augmentedObservableQuery.refetch = variables => {
+      console.log('refetch');
+
+      // Only the request needs to be dispatched, the success
+      // and error state is handled by the subscription.
+      dispatcher.dispatch({
+        type: ActionTypes.REQUEST,
+        payload: {operation}
+      });
+
+      return observableQuery.refetch(variables);
+    };
+
+    augmentedObservableQuery.subscribe = wrapSubscribe({
+      operation,
+      dispatcher,
+      observableQuery
+    });
+
+    return augmentedObservableQuery;
+  };
 
   return augmentedClient;
 }

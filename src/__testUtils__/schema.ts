@@ -42,7 +42,11 @@ export default new GraphQLSchema({
         args: {
           id: {type: GraphQLNonNull(GraphQLID)}
         },
-        resolve: () => respond(db.user)
+        resolve: (root, args) => {
+          console.log('hit query backend');
+
+          return respond({...db.user, id: args.id});
+        }
       }
     }
   }),
@@ -55,7 +59,11 @@ export default new GraphQLSchema({
           id: {type: GraphQLNonNull(GraphQLID)},
           user: {type: UserInput}
         },
-        resolve: (_, {user}) => respond(Object.assign(db.user, user))
+        resolve: (_, {user}) => {
+          console.log('hit mutation backend');
+
+          return respond(Object.assign(db.user, user));
+        }
       }
     }
   })
