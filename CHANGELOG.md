@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0
+
+### Breaking changes
+
+- The library now supports [the new `@apollo/client`](https://www.apollographql.com/docs/react/v3.0-beta/migrating/apollo-client-3-migration/). Older versions are no longer supported.
+
 ## 4.0
 
 ### Improvements

@@ -1,5 +1,9 @@
-import {Operation, ExecutionResult} from 'apollo-link';
-import {ServerError, ServerParseError} from 'apollo-link-http-common';
+import {
+  Operation,
+  ExecutionResult,
+  ServerError,
+  ServerParseError
+} from '@apollo/client';
 import ActionTypes from './ActionTypes';
 
 interface Action {

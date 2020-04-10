@@ -11,9 +11,7 @@ This library helps with implementing global loading indicators like progress bar
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {ApolloClient} from 'apollo-client';
-import {createHttpLink} from 'apollo-link-http';
-import {ApolloProvider} from '@apollo/react-common';
+import {ApolloClient, InMemoryCache, createHttpLink, ApolloProvider} from '@apollo/client';
 import {createNetworkStatusNotifier} from 'react-apollo-network-status';
 
 const {link, useApolloNetworkStatus} = createNetworkStatusNotifier();
@@ -71,7 +69,7 @@ type OperationError = {
 };
 ```
 
-The error objects have the same structure as the one provided by [apollo-link-error](https://github.com/apollographql/apollo-link/tree/master/packages/apollo-link-error). Subscriptions currently don't affect the status returned by `useApolloNetworkStatus`.
+Subscriptions currently don't affect the status returned by `useApolloNetworkStatus`.
 
 Useful applications are for example integrating with [NProgress.js](http://ricostacruz.com/nprogress/) or showing errors with [snackbars from Material UI](http://www.material-ui.com/#/components/snackbar).
 

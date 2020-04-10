@@ -1,6 +1,6 @@
 {
   "name": "react-apollo-network-status",
-  "version": "3.0.0",
+  "version": "5.0.0",
   "description": "Brings information about the global network status from Apollo into React.",
   "repository": "git@github.com:molindo/react-apollo-network-status.git",
   "author": "Jan Amann <jam@molindo.at>",
@@ -14,7 +14,7 @@
     "lint": "eslint './{src,example}/**/*.{ts,tsx}' && tsc --noEmit",
     "test": "jest",
     "build": "yarn lint && yarn test && rm -rf dist && yarn build:compile",
-    "build:compile": "microbundle --format cjs,umd --globals @apollo/react-common=apolloReactCommon,apollo-link=apolloLink",
+    "build:compile": "microbundle --format cjs",
     "dev": "parcel example/index.html --port 8080",
     "prepublishOnly": "yarn build"
   },
@@ -32,19 +32,13 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "@apollo/react-common": "^3.0.0",
-    "apollo-link": "^1.2.13",
-    "apollo-link-http-common": "^0.2.0",
-    "apollo-utilities": "^1.3.0"
+    "@apollo/client": "3.0.0-beta.43"
   },
   "resolutions": {
-    "apollo-link": "1.2.13",
-    "apollo-utilities": "1.3.2",
     "graphql": "14.5.8"
   },
   "devDependencies": {
-    "@apollo/react-hooks": "3.1.3",
-    "@apollo/react-testing": "3.1.4",
+    "@apollo/link-schema": "2.0.0-beta.3",
     "@babel/cli": "7.6.4",
     "@babel/core": "7.6.4",
     "@babel/plugin-proposal-class-properties": "7.5.5",
@@ -58,9 +52,6 @@
     "@types/react-dom": "16.9.2",
     "@typescript-eslint/eslint-plugin": "2.4.0",
     "@typescript-eslint/parser": "2.4.0",
-    "apollo-cache-inmemory": "1.6.5",
-    "apollo-client": "2.6.8",
-    "apollo-link-schema": "1.2.4",
     "babel-eslint": "10.0.3",
     "babel-jest": "25.3.0",
     "eslint": "6.5.1",
