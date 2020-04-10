@@ -40,7 +40,7 @@ const element = (
 ReactDOM.render(element, document.getElementById('root'));
 ```
 
-> **Note:** The current version of this library supports the latest [`@apollo/react-*` packages](https://www.apollographql.com/docs/react/migrating/hooks-migration/). If you're using an older version of React Apollo and don't want to upgrade, you can use an older version of this library (see [changelog](./CHANGELOG.md)).
+> **Note:** The current version of this library supports the latest [`@apollo-client` package](https://www.apollographql.com/docs/react/v3.0-beta/migrating/apollo-client-3-migration/). If you're using an older version of React Apollo and don't want to upgrade, you can use an older version of this library (see [changelog](./CHANGELOG.md)).
 
 ## Returned data
 

@@ -15,7 +15,7 @@
 
 ### Breaking changes
 
-- The usage of the library has changed from using a provider to configuring a link that needs to be passed to the `ApolloClient` constructor (see [README](https://github.com/molindo/react-apollo-network-status/tree/compatibility-apollo-3)).
+- The usage of the library has changed from using a provider to configuring a link that needs to be passed to the `ApolloClient` constructor (see [README](./README.md)).
 - Scoping network status handling to a subtree was removed along with the `enableBubbling` option. The network status handling is scoped to the usage of the `ApolloClient` instance.
 
 ## 3.0
