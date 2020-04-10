@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0
+
+### Improvements
+
+- Improved types for `NetworkStatusAction`.
+- Fix [#22](https://github.com/molindo/react-apollo-network-status/issues/22) and [#28](https://github.com/molindo/react-apollo-network-status/issues/28)) by using a generally more reliable interaction with the Apollo Cache.
+
+### Breaking changes
+
+- The usage of the library has changed from using a provider to configuring a link that needs to be passed to the `ApolloClient` constructor.
+- `enableBubbling` was removed.
+
 ## 3.0
 
 ### New features

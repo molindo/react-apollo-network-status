@@ -14,7 +14,9 @@ import ReactDOM from 'react-dom';
 import {ApolloClient} from 'apollo-client';
 import {createHttpLink} from 'apollo-link-http';
 import {ApolloProvider} from '@apollo/react-common';
-import {ApolloNetworkStatusProvider, useApolloNetworkStatus} from 'react-apollo-network-status';
+import {createNetworkStatusNotifier} from 'react-apollo-network-status';
+
+const {link, useApolloNetworkStatus} = createNetworkStatusNotifier();
 
 function GlobalLoadingIndicator() {
   const status = useApolloNetworkStatus();
@@ -28,15 +30,13 @@ function GlobalLoadingIndicator() {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: createHttpLink()
+  link: link.concat(createHttpLink())
 });
 
 const element = (
   <ApolloProvider client={client}>
-    <ApolloNetworkStatusProvider>
-      <GlobalLoadingIndicator />
-      <App />
-    </ApolloNetworkStatusProvider>
+    <GlobalLoadingIndicator />
+    <App />
   </ApolloProvider>
 );
 ReactDOM.render(element, document.getElementById('root'));
@@ -99,50 +99,12 @@ useApolloNetworkStatus({
 mutate({context: {useApolloNetworkStatus: true}});
 ```
 
-### Bubbling
-
-You can nest multiple `<ApolloNetworkStatusProvider />` inside each other. For example:
-
-```jsx
-<ApolloProvider client={client}>
-  <ApolloNetworkStatusProvider>
-    <SomeComponentWithAQuery />
-    <LoadingIndicator />
-
-    <ApolloNetworkStatusProvider>
-      {/* When this query begins to load only the indicator below will be triggered. */}
-      <AnotherComponentWithAQuery />
-      <LoadingIndicator />
-    </ApolloNetworkStatusProvider>
-
-  </ApolloNetworkStatusProvider>
-</ApolloProvider>
-```
-
-In this example `<LoadingIndicator />` calls `useApolloNetworkStatus`. By default, the operations fired from queries and mutations will only affect consumers of `useApolloNetworkStatus` below a given provider. You can enable bubbling in order to report network status to parents as well.
-
-```jsx
-<ApolloProvider client={client}>
-  <ApolloNetworkStatusProvider>
-    <SomeComponentWithAQuery />
-    <LoadingIndicator />
-
-    <ApolloNetworkStatusProvider enableBubbling>
-      {/* When this query begins to load also the indicator above will be triggered. */}
-      <AnotherComponentWithAQuery />
-      <LoadingIndicator />
-    </ApolloNetworkStatusProvider>
-
-  </ApolloNetworkStatusProvider>
-</ApolloProvider>
-```
-
 ### Custom state
 
 You can fully control how operations are mapped to state by providing a custom reducer to a separate low-level hook.
 
 ```tsx
-import {ActionTypes, useApolloNetworkStatusReducer} from 'react-apollo-network-status';
+const {link, useApolloNetworkStatusReducer} = createNetworkStatusNotifier();
 
 const initialState = 0;
 

@@ -1,12 +1,28 @@
 import {Operation} from 'apollo-link';
-import React from 'react';
-import {useApolloNetworkStatus} from '../src';
+import React, {SyntheticEvent, useState} from 'react';
+import {
+  UseApolloNetworkStatusOptions,
+  NetworkStatus
+} from '../src/useApolloNetworkStatus';
 
 type Props = {
-  optIn?: boolean;
+  initialOptIn?: boolean;
+  useApolloNetworkStatus?: (
+    options?: UseApolloNetworkStatusOptions
+  ) => NetworkStatus;
 };
 
-export default function NetworkStatusReporter({optIn}: Props) {
+export default function NetworkStatusReporter({
+  initialOptIn = false,
+  useApolloNetworkStatus = require('./NetworkStatusNotifier')
+    .useApolloNetworkStatus
+}: Props) {
+  const [optIn, setOptIn] = useState(initialOptIn);
+
+  function onOptInCheckboxChange(event: SyntheticEvent<HTMLInputElement>) {
+    setOptIn(event.currentTarget.checked);
+  }
+
   const options = optIn
     ? {
         shouldHandleOperation: (operation: Operation) =>
@@ -25,5 +41,25 @@ export default function NetworkStatusReporter({optIn}: Props) {
     statusMessage = 'Idle';
   }
 
-  return <p>Network status: {statusMessage}</p>;
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        padding: '0 15px'
+      }}
+    >
+      <p>Network status: {statusMessage}</p>
+      <label>
+        <input
+          checked={optIn}
+          onChange={onOptInCheckboxChange}
+          type="checkbox"
+        />
+        Ignore mutation loading state
+      </label>
+    </div>
+  );
 }
