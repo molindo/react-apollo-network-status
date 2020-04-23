@@ -1,10 +1,12 @@
 import {Operation} from 'apollo-link';
 import {OperationTypeNode, ExecutionResult, GraphQLError} from 'graphql';
 import {ServerError, ServerParseError} from 'apollo-link-http-common';
-import {useEffect, useRef, useMemo} from 'react';
+import {useMemo} from 'react';
+import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';
-import {NetworkStatusAction} from './NetworkStatusAction';
+import NetworkStatusAction from './NetworkStatusAction';
 import useApolloNetworkStatusReducer from './useApolloNetworkStatusReducer';
+import useEventCallback from './useEventCallback';
 
 /**
  * Applies reasonable defaults to `useApolloNetworkStatusReducer`.
@@ -12,7 +14,7 @@ import useApolloNetworkStatusReducer from './useApolloNetworkStatusReducer';
 
 export type OperationError = {
   networkError?: Error | ServerError | ServerParseError;
-  operation?: Operation;
+  operation: Operation;
   response?: ExecutionResult;
   graphQLErrors?: ReadonlyArray<GraphQLError>;
 };
@@ -70,8 +72,8 @@ function latestOperationError(type: OperationTypeNode) {
         return undefined;
 
       case ActionTypes.ERROR: {
-        const {networkError, result, operation} = action.payload;
-        return {networkError, operation, response: result};
+        const {networkError, operation} = action.payload;
+        return {networkError, operation};
       }
 
       case ActionTypes.SUCCESS: {
@@ -141,33 +143,38 @@ function defaultShouldHandleOperation(operation: Operation) {
   return operation.getContext().useApolloNetworkStatus !== false;
 }
 
-export default function useApolloNetworkStatus(options?: {
+export type UseApolloNetworkStatusOptions = {
   shouldHandleOperation?: (operation: Operation) => boolean;
-}) {
+};
+
+export default function useApolloNetworkStatus(
+  dispatcher: Dispatcher,
+  options?: UseApolloNetworkStatusOptions
+) {
   if (!options) options = {};
   const shouldHandleOperation =
     options.shouldHandleOperation || defaultShouldHandleOperation;
 
-  // Assigning this to a separate ref is a performance optimization to allow
-  // changing this option via props without causing the reducer to change.
-  const shouldHandleOperationRef = useRef(shouldHandleOperation);
-
-  useEffect(() => {
-    if (shouldHandleOperation !== shouldHandleOperationRef.current) {
-      shouldHandleOperationRef.current = shouldHandleOperation;
-    }
-  }, [options, shouldHandleOperation]);
+  // Performance optimization to allow changing this option
+  // via props without causing the reducer to change.
+  const shouldHandleOperationEventCallback = useEventCallback(
+    shouldHandleOperation
+  );
 
   const configuredReducer = useMemo(
     () => (state: NetworkStatus, action: NetworkStatusAction) => {
-      if (!shouldHandleOperationRef.current(action.payload.operation)) {
+      if (!shouldHandleOperationEventCallback(action.payload.operation)) {
         return state;
       }
 
       return reducer(state, action);
     },
-    []
+    [shouldHandleOperationEventCallback]
   );
 
-  return useApolloNetworkStatusReducer(configuredReducer, initialState);
+  return useApolloNetworkStatusReducer(
+    dispatcher,
+    configuredReducer,
+    initialState
+  );
 }

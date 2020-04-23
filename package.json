@@ -1,6 +1,6 @@
 {
   "name": "react-apollo-network-status",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Brings information about the global network status from Apollo into React.",
   "repository": "git@github.com:molindo/react-apollo-network-status.git",
   "author": "Jan Amann <jam@molindo.at>",
@@ -13,13 +13,12 @@
   "scripts": {
     "lint": "eslint './{src,example}/**/*.{ts,tsx}' && tsc --noEmit",
     "test": "jest",
-    "build": "yarn lint && yarn test && rm -rf dist && yarn build:compile",
+    "build": "rm -rf dist && yarn lint && yarn test && yarn build:compile",
     "build:compile": "microbundle --format cjs,umd --globals @apollo/react-common=apolloReactCommon,apollo-link=apolloLink",
     "dev": "parcel example/index.html --port 8080",
     "prepublishOnly": "yarn build"
   },
   "jest": {
-    "timers": "fake",
     "roots": [
       "src",
       "example"
@@ -29,8 +28,7 @@
     "dist"
   ],
   "peerDependencies": {
-    "apollo-client": "^2.6.0",
-    "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0",
+    "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0",
     "react": "^16.8.0"
   },
   "dependencies": {
@@ -46,23 +44,25 @@
   },
   "devDependencies": {
     "@apollo/react-hooks": "3.1.3",
+    "@apollo/react-testing": "3.1.4",
     "@babel/cli": "7.6.4",
     "@babel/core": "7.6.4",
     "@babel/plugin-proposal-class-properties": "7.5.5",
     "@babel/preset-env": "7.6.3",
     "@babel/preset-react": "7.6.3",
     "@babel/preset-typescript": "7.6.0",
+    "@testing-library/react": "10.0.2",
     "@types/change-emitter": "0.1.2",
-    "@types/jest": "24.0.19",
+    "@types/jest": "25.2.1",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
     "@typescript-eslint/eslint-plugin": "2.4.0",
     "@typescript-eslint/parser": "2.4.0",
-    "apollo-cache-inmemory": "1.6.3",
-    "apollo-client": "2.6.4",
+    "apollo-cache-inmemory": "1.6.5",
+    "apollo-client": "2.6.8",
     "apollo-link-schema": "1.2.4",
     "babel-eslint": "10.0.3",
-    "babel-jest": "24.9.0",
+    "babel-jest": "25.3.0",
     "eslint": "6.5.1",
     "eslint-config-molindo": "4.0.2",
     "eslint-import-resolver-typescript": "2.0.0",
@@ -73,12 +73,13 @@
     "eslint-plugin-react": "7.16.0",
     "eslint-plugin-react-hooks": "1.7.0",
     "graphql-tag": "2.10.1",
-    "jest": "24.9.0",
+    "jest": "25.3.0",
     "microbundle": "0.11.0",
     "parcel": "1.12.4",
     "prettier": "1.18.2",
     "react": "16.10.2",
     "react-dom": "16.10.2",
-    "typescript": "3.6.4"
+    "regenerator-runtime": "0.13.5",
+    "typescript": "3.7.5"
   }
 }

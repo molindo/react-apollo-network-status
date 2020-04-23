@@ -4,6 +4,8 @@ import React, {useState, useEffect} from 'react';
 
 type Props = {
   isBroken?: boolean;
+  initialSkip?: boolean;
+  id?: string;
 };
 
 const query = gql`
@@ -26,14 +28,18 @@ interface Variables {
   id: string;
 }
 
-export default function DataFetcher({isBroken}: Props) {
-  const [skip, setSkip] = useState(true);
+export default function DataFetcher({
+  isBroken,
+  initialSkip = true,
+  id = '1'
+}: Props) {
+  const [skip, setSkip] = useState(initialSkip);
   const {data, loading, error, refetch} = useQuery<Data, Variables>(query, {
     context: {useApolloNetworkStatus: true},
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
     skip,
-    variables: isBroken ? undefined : {id: '1'}
+    variables: isBroken ? undefined : {id}
   });
 
   function onFetchClick() {
@@ -56,10 +62,18 @@ export default function DataFetcher({isBroken}: Props) {
   if (skip) {
     content = (
       <>
-        Idle{' '}
+        Local status: Idle{' '}
         <button onClick={onFetchClick}>
           {isBroken ? 'Broken fetch' : 'Fetch'}
         </button>
+      </>
+    );
+  } else if (loading) {
+    content = 'Local status: Loading …';
+  } else if (error) {
+    content = (
+      <>
+        Error <button onClick={onRetryClick}>Retry</button>{' '}
       </>
     );
   } else if (data && data.user) {
@@ -69,14 +83,6 @@ export default function DataFetcher({isBroken}: Props) {
         <button disabled={loading} onClick={onRefetchClick}>
           Refetch
         </button>
-      </>
-    );
-  } else if (loading) {
-    content = 'Loading …';
-  } else if (error) {
-    content = (
-      <>
-        Error <button onClick={onRetryClick}>Retry</button>{' '}
       </>
     );
   } else {

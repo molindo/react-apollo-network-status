@@ -1,4 +1,4 @@
-import {NetworkStatusAction} from './NetworkStatusAction';
+import NetworkStatusAction from './NetworkStatusAction';
 
 type Listener = (action: NetworkStatusAction) => void;
 

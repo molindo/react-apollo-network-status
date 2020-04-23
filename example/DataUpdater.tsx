@@ -40,13 +40,18 @@ export default function DataUpdater() {
 
   return (
     <form onSubmit={onSubmit}>
-      <input
-        onChange={onNameInputChange}
-        placeholder="Update user name"
-        type="text"
-        value={name}
-      />{' '}
-      <input disabled={result.loading} type="submit" />
+      <label>
+        Update user name:
+        <input
+          onChange={onNameInputChange}
+          style={{marginLeft: 5}}
+          type="text"
+          value={name}
+        />{' '}
+      </label>
+      <button disabled={result.loading} type="submit">
+        Submit
+      </button>
     </form>
   );
 }

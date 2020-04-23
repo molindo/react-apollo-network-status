@@ -10,36 +10,17 @@ import ActionTypes from './ActionTypes';
 
 export default class ApolloLinkNetworkStatus extends ApolloLink {
   dispatcher: Dispatcher;
-  enableBubbling: boolean;
 
-  constructor({
-    dispatcher,
-    enableBubbling
-  }: {
-    dispatcher: Dispatcher;
-    enableBubbling?: boolean;
-  }) {
+  constructor(dispatcher: Dispatcher) {
     super();
     this.dispatcher = dispatcher;
-    this.enableBubbling = enableBubbling === true;
   }
 
   request(operation: Operation, forward: NextLink): Observable<FetchResult> {
-    const context = operation.getContext();
-
-    let shouldDispatch = true;
-    if (context.isNetworkStatusHandled !== true && !this.enableBubbling) {
-      operation.setContext({isNetworkStatusHandled: true});
-    } else {
-      shouldDispatch = context.isNetworkStatusHandled !== true;
-    }
-
-    if (shouldDispatch) {
-      this.dispatcher.dispatch({
-        type: ActionTypes.REQUEST,
-        payload: {operation}
-      });
-    }
+    this.dispatcher.dispatch({
+      type: ActionTypes.REQUEST,
+      payload: {operation}
+    });
 
     const subscriber = forward(operation);
 
@@ -50,12 +31,10 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
         next: result => {
           isPending = false;
 
-          if (shouldDispatch) {
-            this.dispatcher.dispatch({
-              type: ActionTypes.SUCCESS,
-              payload: {operation, result}
-            });
-          }
+          this.dispatcher.dispatch({
+            type: ActionTypes.SUCCESS,
+            payload: {operation, result}
+          });
 
           observer.next(result);
         },
@@ -63,12 +42,10 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
         error: networkError => {
           isPending = false;
 
-          if (shouldDispatch) {
-            this.dispatcher.dispatch({
-              type: ActionTypes.ERROR,
-              payload: {operation, networkError}
-            });
-          }
+          this.dispatcher.dispatch({
+            type: ActionTypes.ERROR,
+            payload: {operation, networkError}
+          });
 
           observer.error(networkError);
         },
@@ -77,7 +54,7 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
       });
 
       return () => {
-        if (shouldDispatch && isPending) {
+        if (isPending) {
           this.dispatcher.dispatch({
             type: ActionTypes.CANCEL,
             payload: {operation}

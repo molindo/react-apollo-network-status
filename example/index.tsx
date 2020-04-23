@@ -1,31 +1,31 @@
-import {ApolloProvider} from '@apollo/react-common';
+import {ApolloProvider} from '@apollo/react-hooks';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createClient from '../src/__testUtils__/createClient';
 import DataFetcher from './DataFetcher';
 import DataUpdater from './DataUpdater';
-import NetworkStatusBoundary from './NetworkStatusBoundary';
-
-const client = createClient();
+import NetworkStatusReporter from './NetworkStatusReporter';
+import LazyRender from './LazyRender';
+import createClient from './createClient';
 
 const element = (
   <div style={{padding: 10}}>
-    <ApolloProvider client={client}>
-      <DataFetcher />
-      <DataUpdater />
-      <NetworkStatusBoundary>
+    <ApolloProvider client={createClient()}>
+      <fieldset>
+        <legend>Reporters</legend>
+        <NetworkStatusReporter />
+        <div style={{height: 10}} />
+        <NetworkStatusReporter />
+      </fieldset>
+      <div style={{height: 10}} />
+      <fieldset>
+        <legend>Fetchers</legend>
+        <LazyRender>
+          <DataFetcher initialSkip={false} />
+        </LazyRender>
         <DataFetcher />
+        <DataFetcher isBroken />
         <DataUpdater />
-        <NetworkStatusBoundary>
-          <DataFetcher />
-          <DataFetcher isBroken />
-          <DataUpdater />
-          <NetworkStatusBoundary>
-            <DataFetcher />
-            <DataUpdater />
-          </NetworkStatusBoundary>
-        </NetworkStatusBoundary>
-      </NetworkStatusBoundary>
+      </fieldset>
     </ApolloProvider>
   </div>
 );
