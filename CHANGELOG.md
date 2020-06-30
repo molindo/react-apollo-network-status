@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.1
+
+### Fixes
+
+- Compatibility with React 16.13
+
 ## 4.0
 
 ### Improvements
