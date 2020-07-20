@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-- The library now supports [the new `@apollo/client@3`](https://www.apollographql.com/docs/react/v3.0-beta/migrating/apollo-client-3-migration/). Older versions are no longer supported.
+- The library now supports [the new `@apollo/client@3`](https://www.apollographql.com/docs/react/migrating/apollo-client-3-migration/). Older versions are no longer supported.
 
 ## 4.0
 

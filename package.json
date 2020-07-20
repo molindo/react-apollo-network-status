@@ -32,13 +32,12 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "@apollo/client": "3.0.0-beta.43"
+    "@apollo/client": "3.0.0"
   },
   "resolutions": {
     "graphql": "14.5.8"
   },
   "devDependencies": {
-    "@apollo/link-schema": "2.0.0-beta.3",
     "@babel/cli": "7.6.4",
     "@babel/core": "7.6.4",
     "@babel/plugin-proposal-class-properties": "7.5.5",

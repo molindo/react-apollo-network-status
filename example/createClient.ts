@@ -1,5 +1,5 @@
 import {ApolloClient, InMemoryCache} from '@apollo/client';
-import {SchemaLink} from '@apollo/link-schema';
+import {SchemaLink} from '@apollo/client/link/schema';
 import schema from './schema';
 import {link as networkStatusNotifierLink} from './NetworkStatusNotifier';
 
