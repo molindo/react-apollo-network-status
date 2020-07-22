@@ -74,7 +74,7 @@ it('recognizes loading states when refetching', async () => {
 
   await waitFor(() => getByText('User: Jane'));
   fireEvent.click(getByText('Refetch'));
-  getByText('Local status: Loading …');
+  await waitFor(() => getByText('Local status: Loading …'));
   getByText('Network status: Loading …');
 
   await waitFor(() => getByText('User: Jane'));
