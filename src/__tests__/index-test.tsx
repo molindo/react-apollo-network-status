@@ -42,10 +42,10 @@ it('recognizes loading states when fetching lazily', async () => {
   getByText('Local status: Idle');
   getByText('Network status: Idle');
   fireEvent.click(getByText('Fetch'));
-  getByText('Local status: Loading …');
-  getByText('Network status: Loading …');
+  await waitFor(() => getByText('Local status: Loading …'));
+  await waitFor(() => getByText('Network status: Loading …'));
   await waitFor(() => getByText('User: Jane'));
-  getByText('Network status: Idle');
+  await waitFor(() => getByText('Network status: Idle'));
 });
 
 it('recognizes loading states once a subscription is set up and the component fetches immediately', async () => {
@@ -59,9 +59,9 @@ it('recognizes loading states once a subscription is set up and the component fe
   );
 
   await waitFor(() => getByText('Local status: Loading …'));
-  getByText('Network status: Loading …');
+  await waitFor(() => getByText('Network status: Loading …'));
   await waitFor(() => getByText('User: Jane'));
-  getByText('Network status: Idle');
+  await waitFor(() => getByText('Network status: Idle'));
 });
 
 it('recognizes loading states when refetching', async () => {
@@ -75,10 +75,10 @@ it('recognizes loading states when refetching', async () => {
   await waitFor(() => getByText('User: Jane'));
   fireEvent.click(getByText('Refetch'));
   await waitFor(() => getByText('Local status: Loading …'));
-  getByText('Network status: Loading …');
+  await waitFor(() => getByText('Network status: Loading …'));
 
   await waitFor(() => getByText('User: Jane'));
-  getByText('Network status: Idle');
+  await waitFor(() => getByText('Network status: Idle'));
 });
 
 it('recognizes loading states when variables change', async () => {
@@ -93,15 +93,15 @@ it('recognizes loading states when variables change', async () => {
 
   const {getByText, rerender} = render(<Component />);
 
-  getByText('Local status: Loading …');
+  await waitFor(() => getByText('Local status: Loading …'));
   await waitFor(() => getByText('User: Jane'));
 
   rerender(<Component id="2" />);
-  getByText('Local status: Loading …');
-  getByText('Network status: Loading …');
+  await waitFor(() => getByText('Local status: Loading …'));
+  await waitFor(() => getByText('Network status: Loading …'));
 
   await waitFor(() => getByText('User: Jane'));
-  getByText('Network status: Idle');
+  await waitFor(() => getByText('Network status: Idle'));
 });
 
 it('recognizes mutation loading states', async () => {
@@ -113,7 +113,7 @@ it('recognizes mutation loading states', async () => {
   );
 
   fireEvent.click(getByText('Submit'));
-  getByText('Network status: Loading …');
+  await waitFor(() => getByText('Network status: Loading …'));
   await waitFor(() => getByText('Network status: Idle'));
 });
 
@@ -145,7 +145,7 @@ it('can configure which operations to handle on a case-by-case basis', async () 
   );
 
   fireEvent.click(getByText('Submit'));
-  getByText('Network status: Idle');
+  await waitFor(() => getByText('Network status: Idle'));
   getByText('Network status: Loading …');
   await waitFor(() => {
     expect(queryAllByText('Network status: Idle').length).toBe(2);

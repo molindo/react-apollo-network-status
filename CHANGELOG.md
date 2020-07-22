@@ -7,6 +7,12 @@
 - The library now supports [the new `@apollo/client@3`](https://www.apollographql.com/docs/react/migrating/apollo-client-3-migration/). Older versions are no longer supported.
 - Remove UMD build, as Apollo also doesn't support one anymore.
 
+## 4.0.1
+
+### Fixes
+
+- Compatibility with React 16.13
+
 ## 4.0
 
 ### Improvements

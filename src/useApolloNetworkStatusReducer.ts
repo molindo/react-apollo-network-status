@@ -18,8 +18,23 @@ export default function useApolloNetworkStatusReducer<T>(
   // on the initial render, we'll miss the request event. Note that this isn't
   // an issue when pre-rendering or fetching on the server side.
   useEffect(() => {
-    dispatcher.addListener(dispatch);
-    return () => dispatcher.removeListener(dispatch);
+    let animationFrameId: number;
+
+    function onDispatch(action: NetworkStatusAction) {
+      // Apollo fetches data while rendering and therefore invoking a GraphQL
+      // request would trigger an update while another component renders. In
+      // React@^16.13.1 this triggers a warning. To avoid this, we can handle
+      // all network events at the beginning of the next frame.
+      animationFrameId = requestAnimationFrame(() => {
+        dispatch(action);
+      });
+    }
+
+    dispatcher.addListener(onDispatch);
+    return () => {
+      dispatcher.removeListener(onDispatch);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [dispatcher]);
 
   return status;
