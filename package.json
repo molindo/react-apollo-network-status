@@ -6,10 +6,8 @@
   "author": "Jan Amann <jam@molindo.at>",
   "license": "MIT",
   "main": "dist/index.js",
-  "umd:main": "dist/index.umd.js",
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
-  "browser": "dist/index.umd.js",
   "scripts": {
     "lint": "eslint './{src,example}/**/*.{ts,tsx}' && tsc --noEmit",
     "test": "jest",
