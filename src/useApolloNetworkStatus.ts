@@ -1,6 +1,5 @@
-import {Operation} from 'apollo-link';
+import {Operation, ServerError, ServerParseError} from '@apollo/client';
 import {OperationTypeNode, ExecutionResult, GraphQLError} from 'graphql';
-import {ServerError, ServerParseError} from 'apollo-link-http-common';
 import {useMemo} from 'react';
 import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';

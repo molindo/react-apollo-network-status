@@ -1,4 +1,4 @@
-import {ApolloProvider} from '@apollo/react-hooks';
+import {ApolloProvider} from '@apollo/client';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import DataFetcher from './DataFetcher';

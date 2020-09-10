@@ -1,5 +1,5 @@
-import {Operation, ExecutionResult} from 'apollo-link';
-import {ServerError, ServerParseError} from 'apollo-link-http-common';
+import {Operation, ServerError, ServerParseError} from '@apollo/client';
+import {ExecutionResult} from 'graphql';
 import ActionTypes from './ActionTypes';
 
 interface Action {

@@ -1,7 +1,5 @@
-import {ApolloProvider} from '@apollo/react-hooks';
-import ApolloClient from 'apollo-client';
-import {InMemoryCache} from 'apollo-cache-inmemory';
-import SchemaLink from 'apollo-link-schema';
+import {ApolloProvider, ApolloClient, InMemoryCache} from '@apollo/client';
+import {SchemaLink} from '@apollo/client/link/schema';
 import {render, waitFor, fireEvent} from '@testing-library/react';
 import React from 'react';
 import 'regenerator-runtime/runtime.js';

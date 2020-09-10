@@ -1,4 +1,4 @@
-import {Operation} from 'apollo-link';
+import {Operation} from '@apollo/client';
 import React, {SyntheticEvent, useState} from 'react';
 import {
   UseApolloNetworkStatusOptions,
