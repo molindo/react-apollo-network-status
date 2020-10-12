@@ -1,11 +1,12 @@
-import {useRef, useCallback, useLayoutEffect} from 'react';
+import {useRef, useCallback} from 'react';
+import {useIsomorphicLayoutEffect} from './useIsomorphicLayoutEffect';
 
 export default function useEventCallback(fn: Function) {
   const ref = useRef<Function>(() => {
     throw new Error('Function is called before it was assigned.');
   });
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     ref.current = fn;
   });
 
