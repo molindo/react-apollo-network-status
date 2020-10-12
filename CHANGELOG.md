@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.1
+
+### Fixes
+
+- Avoid layout effect warning on the server side (@mufasa71 in [#35](https://github.com/molindo/react-apollo-network-status/pull/35))
+
 ## 5.0
 
 ### Breaking changes
