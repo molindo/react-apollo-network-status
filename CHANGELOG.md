@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.0
+
+### Features
+
+- React 17 support (@alecdwm in [#49](https://github.com/molindo/react-apollo-network-status/pull/49))
+
 ## 5.0.1
 
 ### Fixes
