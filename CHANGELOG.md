@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.2.1
+
+### Fixes
+
+- Set `homepage` field in `package.json`
+
 ## 5.2.0
 
 ### Features
