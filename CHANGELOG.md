@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.2.0
+
+### Features
+
+- React 18 support
+- GraphQL 16 support
+
 ## 5.1.0
 
 ### Features
