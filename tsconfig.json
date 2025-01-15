@@ -2,6 +2,8 @@
   "compilerOptions": {
     "jsx": "react",
     "lib": ["dom", "es2018"],
+    "outDir": "./dist",
+    "declaration": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "strictNullChecks": true
