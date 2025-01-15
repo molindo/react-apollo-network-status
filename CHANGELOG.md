@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.0
+
+### Features
+
+- React 19 support
+
 ## 5.2.1
 
 ### Fixes
