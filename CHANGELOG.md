@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.1
+
+### Fixes
+
+- Fix types
+
 ## 5.3.0
 
 ### Features
