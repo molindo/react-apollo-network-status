@@ -64,7 +64,7 @@
     "graphql-tag": "2.10.1",
     "html-webpack-plugin": "4.3.0",
     "jest": "25.3.0",
-    "microbundle": "0.11.0",
+    "microbundle": "0.15.1",
     "prettier": "1.18.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
