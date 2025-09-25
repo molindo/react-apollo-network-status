@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "lib": ["dom", "es2018"],
+    "lib": ["dom", "ES6"],
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "bundler",
     "outDir": "./dist",
     "declaration": true,
     "allowSyntheticDefaultImports": true,

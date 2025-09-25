@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
+import {useMutation} from '@apollo/client/react';
 import React, {FormEvent, useState} from 'react';
 
 const mutation = gql`
@@ -12,7 +12,7 @@ const mutation = gql`
 `;
 
 interface Data {
-  upderUser: {
+  updateUser: {
     id: string;
     name: string;
   };

@@ -1,5 +1,5 @@
-import {Operation, ServerError, ServerParseError} from '@apollo/client';
-import {ExecutionResult} from 'graphql';
+import {ServerError, ServerParseError, ApolloLink} from '@apollo/client';
+import {FormattedExecutionResult} from 'graphql';
 import ActionTypes from './ActionTypes';
 
 interface Action {
@@ -9,14 +9,14 @@ interface Action {
 interface NetworkStatusActionRequest extends Action {
   type: typeof ActionTypes.REQUEST;
   payload: {
-    operation: Operation;
+    operation: ApolloLink.Operation;
   };
 }
 
 interface NetworkStatusActionError extends Action {
   type: typeof ActionTypes.ERROR;
   payload: {
-    operation: Operation;
+    operation: ApolloLink.Operation;
     networkError: Error | ServerError | ServerParseError;
   };
 }
@@ -24,15 +24,15 @@ interface NetworkStatusActionError extends Action {
 interface NetworkStatusActionSuccess extends Action {
   type: typeof ActionTypes.SUCCESS;
   payload: {
-    operation: Operation;
-    result: ExecutionResult;
+    operation: ApolloLink.Operation;
+    result: FormattedExecutionResult;
   };
 }
 
 interface NetworkStatusActionCancel extends Action {
   type: typeof ActionTypes.CANCEL;
   payload: {
-    operation: Operation;
+    operation: ApolloLink.Operation;
   };
 }
 

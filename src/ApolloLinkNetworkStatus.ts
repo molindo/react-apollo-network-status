@@ -1,10 +1,4 @@
-import {
-  ApolloLink,
-  Observable,
-  Operation,
-  NextLink,
-  FetchResult
-} from '@apollo/client';
+import {ApolloLink, Observable} from '@apollo/client';
 import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';
 
@@ -16,7 +10,10 @@ export default class ApolloLinkNetworkStatus extends ApolloLink {
     this.dispatcher = dispatcher;
   }
 
-  request(operation: Operation, forward: NextLink): Observable<FetchResult> {
+  request(
+    operation: ApolloLink.Operation,
+    forward: ApolloLink.ForwardFunction
+  ): Observable<ApolloLink.Result> {
     this.dispatcher.dispatch({
       type: ActionTypes.REQUEST,
       payload: {operation}

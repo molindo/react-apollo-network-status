@@ -1,4 +1,4 @@
-import {useQuery} from '@apollo/client';
+import {useQuery} from '@apollo/client/react';
 import gql from 'graphql-tag';
 import React, {useState, useEffect} from 'react';
 
@@ -39,7 +39,7 @@ export default function DataFetcher({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
     skip,
-    variables: isBroken ? undefined : {id}
+    variables: (isBroken ? undefined : {id}) as Variables
   });
 
   function onFetchClick() {

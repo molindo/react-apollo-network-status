@@ -6,12 +6,22 @@
 
 This library helps with implementing global loading indicators like progress bars or adding global error handling, so you don't have to respond to every error in a component that invokes an operation.
 
+## Apollo Client version compatibility
+
+| react-apollo-network-status | Apollo Client |
+| ----------------------------|---------------|
+| 6                           | 4             |
+| 5                           | 3             |
+| 4, 3, 2                     | 2             |
+| 1                           | 1             |
+
 ## Usage
 
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {ApolloClient, InMemoryCache, createHttpLink, ApolloProvider} from '@apollo/client';
+import {ApolloClient, InMemoryCache, HttpLink} from '@apollo/client';
+import {ApolloProvider} from '@apollo/client/react';
 import {createNetworkStatusNotifier} from 'react-apollo-network-status';
 
 const {link, useApolloNetworkStatus} = createNetworkStatusNotifier();
@@ -40,8 +50,6 @@ const element = (
 ReactDOM.render(element, document.getElementById('root'));
 ```
 
-> **Note:** The current version of this library supports the latest [`@apollo-client` package](https://www.apollographql.com/docs/react/migrating/apollo-client-3-migration/). If you're using an older version of React Apollo and don't want to upgrade, you can use an older version of this library (see [changelog](./CHANGELOG.md)).
-
 ## Returned data
 
 The hook `useApolloNetworkStatus` provides an object with the following properties:
@@ -61,11 +69,11 @@ type NetworkStatus = {
   mutationError?: OperationError;
 };
 
-type OperationError = {
+export type OperationError = {
   networkError?: Error | ServerError | ServerParseError;
-  operation?: Operation;
-  response?: ExecutionResult;
-  graphQLErrors?: ReadonlyArray<GraphQLError>;
+  operation: ApolloLink.Operation;
+  response?: FormattedExecutionResult;
+  graphQLErrors?: ReadonlyArray<GraphQLFormattedError>;
 };
 ```
 

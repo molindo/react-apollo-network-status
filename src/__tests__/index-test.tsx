@@ -1,4 +1,5 @@
-import {ApolloProvider, ApolloClient, InMemoryCache} from '@apollo/client';
+import {ApolloClient, InMemoryCache} from '@apollo/client';
+import {ApolloProvider} from '@apollo/client/react';
 import {SchemaLink} from '@apollo/client/link/schema';
 import {render, waitFor, fireEvent} from '@testing-library/react';
 import React from 'react';
@@ -139,7 +140,7 @@ it('can configure which operations to handle on a case-by-case basis', async () 
     <ConfiguredApolloProvider>
       <ConfiguredNetworkStatusReporter initialOptIn />
       <ConfiguredNetworkStatusReporter />
-      <DataFetcher initialSkip={false} />
+      <DataFetcher initialSkip />
       <DataUpdater />
     </ConfiguredApolloProvider>
   );

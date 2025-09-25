@@ -1,5 +1,9 @@
-import {Operation, ServerError, ServerParseError} from '@apollo/client';
-import {OperationTypeNode, ExecutionResult, GraphQLError} from 'graphql';
+import {ServerError, ServerParseError, ApolloLink} from '@apollo/client';
+import {
+  OperationTypeNode,
+  FormattedExecutionResult,
+  GraphQLFormattedError
+} from 'graphql';
 import {useMemo} from 'react';
 import Dispatcher from './Dispatcher';
 import ActionTypes from './ActionTypes';
@@ -13,9 +17,9 @@ import useEventCallback from './useEventCallback';
 
 export type OperationError = {
   networkError?: Error | ServerError | ServerParseError;
-  operation: Operation;
-  response?: ExecutionResult;
-  graphQLErrors?: ReadonlyArray<GraphQLError>;
+  operation: ApolloLink.Operation;
+  response?: FormattedExecutionResult;
+  graphQLErrors?: ReadonlyArray<GraphQLFormattedError>;
 };
 
 export type NetworkStatus = {
@@ -25,11 +29,11 @@ export type NetworkStatus = {
   mutationError?: OperationError;
 };
 
-function isOperationType(operation: Operation, type: OperationTypeNode) {
-  return operation.query.definitions.some(
-    definition =>
-      definition.kind === 'OperationDefinition' && definition.operation === type
-  );
+function isOperationType(
+  operation: ApolloLink.Operation,
+  type: OperationTypeNode
+) {
+  return operation.operationType === type;
 }
 
 function pendingOperations(type: OperationTypeNode) {
@@ -90,17 +94,19 @@ function latestOperationError(type: OperationTypeNode) {
   };
 }
 
-const pendingQueries = pendingOperations('query');
-const pendingMutations = pendingOperations('mutation');
+const pendingQueries = pendingOperations(OperationTypeNode.QUERY);
+const pendingMutations = pendingOperations(OperationTypeNode.MUTATION);
 
-const queryError = latestOperationError('query');
-const mutationError = latestOperationError('mutation');
+const queryError = latestOperationError(OperationTypeNode.QUERY);
+const mutationError = latestOperationError(OperationTypeNode.MUTATION);
 
 function reducer(
   state: NetworkStatus,
   action: NetworkStatusAction
 ): NetworkStatus {
-  if (isOperationType(action.payload.operation, 'subscription')) {
+  if (
+    isOperationType(action.payload.operation, OperationTypeNode.SUBSCRIPTION)
+  ) {
     return state;
   }
 
@@ -137,13 +143,13 @@ const initialState: NetworkStatus = {
   mutationError: undefined
 };
 
-function defaultShouldHandleOperation(operation: Operation) {
+function defaultShouldHandleOperation(operation: ApolloLink.Operation) {
   // Enable opt-out per operation
   return operation.getContext().useApolloNetworkStatus !== false;
 }
 
 export type UseApolloNetworkStatusOptions = {
-  shouldHandleOperation?: (operation: Operation) => boolean;
+  shouldHandleOperation?: (operation: ApolloLink.Operation) => boolean;
 };
 
 export default function useApolloNetworkStatus(
