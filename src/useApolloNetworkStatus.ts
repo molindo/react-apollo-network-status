@@ -80,7 +80,7 @@ function latestOperationError(type: OperationTypeNode) {
       }
 
       case ActionTypes.SUCCESS: {
-        const {result, operation} = action.payload;
+        const {operation, result} = action.payload;
 
         if (result && result.errors) {
           return {graphQLErrors: result.errors, response: result, operation};

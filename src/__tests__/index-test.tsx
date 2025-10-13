@@ -119,7 +119,7 @@ it('recognizes mutation loading states', async () => {
 });
 
 it('incorporates mutation results into the store', async () => {
-  const {getByText, getByLabelText} = render(
+  const {getByLabelText, getByText} = render(
     <ConfiguredApolloProvider>
       <ConfiguredNetworkStatusReporter />
       <DataFetcher initialSkip={false} />
