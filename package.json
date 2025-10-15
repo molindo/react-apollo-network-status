@@ -11,8 +11,9 @@
   "scripts": {
     "lint": "eslint \"./{src,example}/**/*.{ts,tsx}\" && tsc --noEmit",
     "test": "jest",
-    "build": "yarn lint && yarn test && rm -rf dist && yarn build:compile",
-    "build:compile": "tsc",
+    "build": "yarn lint && yarn test && yarn build:clean && yarn build:compile",
+    "build:clean": "rimraf dist",
+    "build:compile": "tsc --build",
     "dev": "webpack-dev-server",
     "prepublishOnly": "yarn build"
   },
@@ -32,8 +33,7 @@
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "resolutions": {
-    "graphql": "16.11.0",
-    "eslint-plugin-sort-destructure-keys": "1.4.0"
+    "graphql": "16.11.0"
   },
   "devDependencies": {
     "@apollo/client": "4.0.5",
@@ -48,13 +48,13 @@
     "@types/jest": "29.5.14",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
-    "@typescript-eslint/eslint-plugin": "6.21.0",
-    "@typescript-eslint/parser": "6.21.0",
+    "@typescript-eslint/eslint-plugin": "8.46.1",
+    "@typescript-eslint/parser": "8.46.1",
     "babel-eslint": "10.0.3",
     "babel-jest": "29.7.0",
     "babel-loader": "10.0.0",
-    "eslint": "7.32.0",
-    "eslint-config-molindo": "5.1.1",
+    "eslint": "8.57.1",
+    "eslint-config-molindo": "7.0.0",
     "eslint-import-resolver-typescript": "2.0.0",
     "eslint-plugin-css-modules": "2.11.0",
     "eslint-plugin-import": "2.32.0",
@@ -70,6 +70,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "regenerator-runtime": "0.13.5",
+    "rimraf": "6.0.1",
     "rxjs": "7.8.2",
     "typescript": "5.6.3",
     "webpack": "5.101.3",
