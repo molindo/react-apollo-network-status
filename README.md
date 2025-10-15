@@ -69,7 +69,7 @@ type NetworkStatus = {
   mutationError?: OperationError;
 };
 
-export type OperationError = {
+type OperationError = {
   networkError?: Error | ServerError | ServerParseError;
   operation: ApolloLink.Operation;
   response?: FormattedExecutionResult;
