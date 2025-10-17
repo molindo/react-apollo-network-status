@@ -1,6 +1,6 @@
 {
   "name": "react-apollo-network-status",
-  "version": "5.3.1",
+  "version": "6.0.0",
   "description": "Brings information about the global network status from Apollo into React.",
   "repository": "git@github.com:molindo/react-apollo-network-status.git",
   "author": "Jan Amann <jam@molindo.at>",

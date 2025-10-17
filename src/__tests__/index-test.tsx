@@ -140,11 +140,12 @@ it('can configure which operations to handle on a case-by-case basis', async () 
     <ConfiguredApolloProvider>
       <ConfiguredNetworkStatusReporter initialOptIn />
       <ConfiguredNetworkStatusReporter />
-      <DataFetcher initialSkip />
+      <DataFetcher initialSkip={false} />
       <DataUpdater />
     </ConfiguredApolloProvider>
   );
 
+  await waitFor(() => getByText('Refetch'));
   fireEvent.click(getByText('Submit'));
   await waitFor(() => getByText('Network status: Idle'));
   getByText('Network status: Loading …');
