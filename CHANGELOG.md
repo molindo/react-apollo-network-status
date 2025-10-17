@@ -2,9 +2,9 @@
 
 ## 6.0.0
 
-### Features
+### Breaking changes
 
-- Apollo Client 4 support (@tiagojufr in [#55](https://github.com/molindo/react-apollo-network-status/pull/55/))
+- Apollo Client 4 support (@tiagojufr and @zerocewl in [#55](https://github.com/molindo/react-apollo-network-status/pull/55/))
 
 ## 5.3.1
 
