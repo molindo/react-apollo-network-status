@@ -1,4 +1,4 @@
-import {useQuery} from '@apollo/client';
+import {useQuery} from '@apollo/client/react';
 import gql from 'graphql-tag';
 import React, {useState, useEffect} from 'react';
 
@@ -29,17 +29,17 @@ interface Variables {
 }
 
 export default function DataFetcher({
-  isBroken,
+  id = '1',
   initialSkip = true,
-  id = '1'
+  isBroken,
 }: Props) {
   const [skip, setSkip] = useState(initialSkip);
-  const {data, loading, error, refetch} = useQuery<Data, Variables>(query, {
+  const {data, error, loading, refetch} = useQuery<Data, Variables>(query, {
     context: {useApolloNetworkStatus: true},
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only',
     skip,
-    variables: isBroken ? undefined : {id}
+    variables: (isBroken ? undefined : {id}) as Variables
   });
 
   function onFetchClick() {
@@ -63,7 +63,7 @@ export default function DataFetcher({
     content = (
       <>
         Local status: Idle{' '}
-        <button onClick={onFetchClick}>
+        <button onClick={onFetchClick} type="button">
           {isBroken ? 'Broken fetch' : 'Fetch'}
         </button>
       </>
@@ -73,14 +73,14 @@ export default function DataFetcher({
   } else if (error) {
     content = (
       <>
-        Error <button onClick={onRetryClick}>Retry</button>{' '}
+        Error <button onClick={onRetryClick} type="button">Retry</button>{' '}
       </>
     );
   } else if (data && data.user) {
     content = (
       <>
         User: {data.user.name}{' '}
-        <button disabled={loading} onClick={onRefetchClick}>
+        <button disabled={loading} onClick={onRefetchClick} type="button">
           Refetch
         </button>
       </>

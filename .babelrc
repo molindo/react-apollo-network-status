@@ -1,11 +1,11 @@
 {
   "presets": [
-    ["@babel/preset-env", {"modules": false}],
+    ["@babel/preset-env", { "targets": { "node": "20" } }],
     "@babel/preset-react",
     "@babel/preset-typescript"
   ],
   "plugins": [
-    "@babel/plugin-proposal-class-properties"
+    "@babel/plugin-transform-class-properties"
   ],
   "env": {
     "test": {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.0.0
+
+### Breaking changes
+
+- Apollo Client 4 support (@tiagojufr and @zerocewl in [#55](https://github.com/molindo/react-apollo-network-status/pull/55/))
+
 ## 5.3.1
 
 ### Fixes

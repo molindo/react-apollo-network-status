@@ -1,4 +1,4 @@
-import {Operation} from '@apollo/client';
+import {ApolloLink} from '@apollo/client';
 import React, {SyntheticEvent, useState} from 'react';
 import {
   UseApolloNetworkStatusOptions,
@@ -25,7 +25,7 @@ export default function NetworkStatusReporter({
 
   const options = optIn
     ? {
-        shouldHandleOperation: (operation: Operation) =>
+        shouldHandleOperation: (operation: ApolloLink.Operation) =>
           operation.getContext().useApolloNetworkStatus === true
       }
     : undefined;

@@ -1,4 +1,5 @@
-import {ApolloProvider, ApolloClient, InMemoryCache} from '@apollo/client';
+import {ApolloClient, InMemoryCache} from '@apollo/client';
+import {ApolloProvider} from '@apollo/client/react';
 import {SchemaLink} from '@apollo/client/link/schema';
 import {render, waitFor, fireEvent} from '@testing-library/react';
 import React from 'react';
@@ -118,7 +119,7 @@ it('recognizes mutation loading states', async () => {
 });
 
 it('incorporates mutation results into the store', async () => {
-  const {getByText, getByLabelText} = render(
+  const {getByLabelText, getByText} = render(
     <ConfiguredApolloProvider>
       <ConfiguredNetworkStatusReporter />
       <DataFetcher initialSkip={false} />
@@ -144,6 +145,7 @@ it('can configure which operations to handle on a case-by-case basis', async () 
     </ConfiguredApolloProvider>
   );
 
+  await waitFor(() => getByText('Refetch'));
   fireEvent.click(getByText('Submit'));
   await waitFor(() => getByText('Network status: Idle'));
   getByText('Network status: Loading …');

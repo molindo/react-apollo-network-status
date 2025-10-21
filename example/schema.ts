@@ -40,7 +40,7 @@ export default new GraphQLSchema({
       user: {
         type: User,
         args: {
-          id: {type: GraphQLNonNull(GraphQLID)}
+          id: {type: new GraphQLNonNull(GraphQLID)}
         },
         resolve: () => respond(db.user)
       }
@@ -52,7 +52,7 @@ export default new GraphQLSchema({
       updateUser: {
         type: User,
         args: {
-          id: {type: GraphQLNonNull(GraphQLID)},
+          id: {type: new GraphQLNonNull(GraphQLID)},
           user: {type: UserInput}
         },
         resolve: (_, {user}) => respond(Object.assign(db.user, user))
