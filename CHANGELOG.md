@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.0.0
+
+### Breaking changes
+
+- Drop GraphQL 15 and earlier support to align with Apollo Client 4
+- Drop React 16 support to align with Apollo Client 4
+
+### Features
+
+- GraphQL 17 support
+
 ## 6.0.0
 
 ### Breaking changes
