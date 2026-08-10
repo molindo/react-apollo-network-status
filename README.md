@@ -9,7 +9,8 @@ This library helps with implementing global loading indicators like progress bar
 ## Apollo Client version compatibility
 
 | react-apollo-network-status | Apollo Client |
-| ----------------------------|---------------|
+| --------------------------- | ------------- |
+| 7                           | 4             |
 | 6                           | 4             |
 | 5                           | 3             |
 | 4, 3, 2                     | 2             |
@@ -58,7 +59,7 @@ The hook `useApolloNetworkStatus` provides an object with the following properti
 type NetworkStatus = {
   // The number of queries which are currently in flight.
   numPendingQueries: number;
-  
+
   // The number of mutations which are currently in flight.
   numPendingMutations: number;
 
@@ -127,7 +128,10 @@ function reducer(state: number, action: NetworkStatusAction) {
 }
 
 function GlobalLoadingIndicator() {
-  const numPendingQueries = useApolloNetworkStatusReducer(reducer, initialState);
+  const numPendingQueries = useApolloNetworkStatusReducer(
+    reducer,
+    initialState
+  );
   return <p>Pending queries: {numPendingQueries}</p>;
 }
 ```
