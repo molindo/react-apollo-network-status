@@ -63,10 +63,10 @@ type NetworkStatus = {
   // The number of mutations which are currently in flight.
   numPendingMutations: number;
 
-  // The latest query error that has occured. This will be reset once the next query starts.
+  // The latest query error that has occurred. This will be reset once the next query starts.
   queryError?: OperationError;
 
-  // The latest mutation error that has occured. This will be reset once the next mutation starts.
+  // The latest mutation error that has occurred. This will be reset once the next mutation starts.
   mutationError?: OperationError;
 };
 
